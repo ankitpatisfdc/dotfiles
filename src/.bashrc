@@ -531,6 +531,7 @@ function main {
         ANDROID_HOME \
         BUILDFARM_HOME \
         CLASSPATH \
+        DISABLE_AUTOUPDATER \
         DOCKER_HOST \
         DOTNET_CLI_TELEMETRY_OPTOUT \
         DYLD_LIBRARY_PATH \
@@ -679,6 +680,9 @@ function main {
 
     # Brew Bundle Prevent Lockfiles
     HOMEBREW_BUNDLE_NO_LOCK=1
+
+    # Claude Code Prevent Auto-Update
+    DISABLE_AUTOUPDATER=1
 
     # RLWrap
     RLWRAP_EDITOR="vim '+call cursor(%L,%C)'"
