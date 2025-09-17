@@ -55,6 +55,8 @@
             "editorBracketMatch.border": "#000",
             "editorGroup.border": "#000",
             "editorGroupHeader.border": "#000",
+            "editorIndentGuide.background1": "#444",
+            "editorRuler.foreground": "#444",
             "focusBorder": "#444",
             "scrollbarSlider.activeBackground": "#4447",
             "scrollbarSlider.background": "#4445",
