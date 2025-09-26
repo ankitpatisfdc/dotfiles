@@ -24,6 +24,7 @@
     "files.restoreUndoStack": false,
     "files.trimFinalNewlines": true,
     "files.trimTrailingWhitespace": true,
+    "git.openRepositoryInParentFolders": "never",
     "markdown.preview.fontFamily": "'Ubuntu', sans-serif",
     "telemetry.telemetryLevel": "off",
     "terminal.integrated.enablePersistentSessions": false,
