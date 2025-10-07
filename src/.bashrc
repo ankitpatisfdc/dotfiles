@@ -782,7 +782,6 @@ function main {
 
     setup_prompt
     unset -f setup_prompt
-    set_prompt
 
     if ((UID != 0))
     then
