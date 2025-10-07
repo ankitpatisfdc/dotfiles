@@ -600,7 +600,7 @@ function main {
         source "$global_profile"
     fi
 
-    if command -v mesg &>/dev/null
+    if [[ $- == *i* ]] && command -v mesg &>/dev/null
     then
         mesg n || :
     fi
