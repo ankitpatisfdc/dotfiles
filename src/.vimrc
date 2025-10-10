@@ -38,6 +38,7 @@ set nocompatible
     g:ale_linters_ignore = {
         java:   ['checkstyle'     ],
         python: ['pyright', 'ruff'],
+        sh:     ['shell'          ],
     }
 
     g:ale_java_google_java_format_options = '--aosp'
