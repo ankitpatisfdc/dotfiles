@@ -392,7 +392,7 @@ function add_brewed_items_to_env {
         # Google Cloud SDK
         if ((UID != 0))
         then
-            local gcloud_sdk="$brew_prefix/Caskroom/google-cloud-sdk/latest/google-cloud-sdk"
+            local gcloud_sdk="$brew_prefix/Caskroom/gcloud-cli/latest/google-cloud-sdk"
             if [[ -f $gcloud_sdk/path.bash.inc ]]
             then
                 source "$gcloud_sdk/path.bash.inc"
