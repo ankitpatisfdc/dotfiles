@@ -19,6 +19,7 @@
         100,
         120
     ],
+    "editor.scrollPredominantAxis": false,
     "files.hotExit": "off",
     "files.insertFinalNewline": true,
     "files.restoreUndoStack": false,
