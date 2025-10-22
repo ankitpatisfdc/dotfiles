@@ -222,16 +222,16 @@ function gitsh_workdir {
 }
 
 function gitsh_dirty {
-    if ! git rev-parse --verify HEAD >/dev/null 2>&1
+    if ! git rev-parse --verify HEAD &>/dev/null
     then
         return 0
     fi
 
-    if ! git diff --quiet 2>/dev/null
+    if ! git diff --quiet &>/dev/null
     then
         dirty_marker=' *'
         gitsh_apply_color dirty_marker red
-    elif ! git diff --staged --quiet 2>/dev/null
+    elif ! git diff --staged --quiet &>/dev/null
     then
         dirty_marker=' *'
         gitsh_apply_color dirty_marker yellow
@@ -241,7 +241,7 @@ function gitsh_dirty {
 }
 
 function gitsh_dirty_stash {
-    if ! git rev-parse --verify refs/stash >/dev/null 2>&1
+    if ! git rev-parse --verify refs/stash &>/dev/null
     then
         return 0
     fi
