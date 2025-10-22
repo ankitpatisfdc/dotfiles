@@ -158,7 +158,7 @@ function gitsh_headname {
     then
         headname=${headname#refs/heads/}
     else
-        headname=$(git rev-parse --short HEAD 2>/dev/null)
+        headname=${ git rev-parse --short HEAD 2>/dev/null; }
     fi
 
     gitsh_apply_color headname 'yellow reverse'
