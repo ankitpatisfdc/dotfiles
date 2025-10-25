@@ -34,6 +34,7 @@
     "editor.scrollPredominantAxis": false,
     "editor.suggest.preview": true,
     "editor.wordBasedSuggestions": "allDocuments",
+    "explorer.compactFolders": false,
     "explorer.confirmDelete": false,
     "explorer.confirmDragAndDrop": false,
     "files.enableTrash": false,
