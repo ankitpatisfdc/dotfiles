@@ -21,6 +21,7 @@
         120
     ],
     "editor.scrollPredominantAxis": false,
+    "explorer.compactFolders": false,
     "files.hotExit": "off",
     "files.insertFinalNewline": true,
     "files.restoreUndoStack": false,
