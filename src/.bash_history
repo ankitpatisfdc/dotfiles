@@ -30,13 +30,18 @@ CLASSPATH=. java ClassName
 GIT_COMMITTER_NAME='Ankit Pati' GIT_COMMITTER_EMAIL='contact@ankitpati.in' git rebase branchname --exec 'git commit --amend --author="Ankit Pati <contact@ankitpati.in>" --no-edit --no-gpg-sign'
 HTTPS_PROXY="$(jq --raw-output '.proxies."https-proxy"' < ~/.docker/daemon.json)" NO_PROXY="$(jq --raw-output '.proxies."no-proxy"' < ~/.docker/daemon.json)" skopeo sync --dry-run --override-arch amd64 --override-os linux --src docker --dest docker docker.io/library/busybox gcr.io/project_id/namespace/
 HTTPS_PROXY="$(jq --raw-output '.proxies."https-proxy"' < ~/.docker/daemon.json)" NO_PROXY="$(jq --raw-output '.proxies."no-proxy"' < ~/.docker/daemon.json)" skopeo sync --dry-run --override-arch amd64 --override-os linux --src docker --dest docker docker.io/library/busybox:latest gcr.io/project_id/namespace/
+KUBECONFIG="$PWD/kubeconfig.yaml:$HOME/.kube/config" kubectl config view --merge --flatten | sponge ~/.kube/config
 LESS='-I' git log --graph --pretty=fuller --show-signature
 P4DIFF=vimdiff p4 diff -Od -f //depot/directory/...
 P4DIFF=vimdiff p4 diff -f //depot/directory/...
 P4DIFF=vimdiff p4 diff -f //depot/directory/filename
-PATH="$(grep --invert-match binutils <<<"${PATH//:/$'\n'}" | paste --delimiters=':' --serial)" cpan Unicode::GCString
+PATH="${ grep --invert-match binutils <<<"${PATH//:/$'\n'}" | paste --delimiters=':' --serial; }" cpan Unicode::GCString
+PATH=${ grep --extended-regexp --invert-match 'binutils|libtool' <<<"${PATH//:/$'\n'}" | paste --delimiters=':' --serial; } bazel build //...
+PATH=${ grep --invert-match homebrew <<<"${PATH//:/$'\n'}" | paste --delimiters=':' --serial; } "${ command -v bazel; }" build //...
+SOFT_SERVE_INITIAL_ADMIN_KEYS=$(< ~/.ssh/id_ed25519.pub) soft serve
+TFENV_TERRAFORM_VERSION=0.11.15 terraform init -upgrade
 TF_LOG=debug terraform plan -out tfplan
-TZ= date
+TZ='' date
 TZ=-5:30 date
 TZ=Asia/Kolkata date
 TZ=UTC0 git log --date='format-local:%Y-%m-%dT%H:%M:%SZ'
@@ -93,14 +98,20 @@ bat --config-dir
 bat --config-file
 bat --style changes filename.pl
 bazel build //:TargetName
-bazel clean
+bazel clean --expunge --async
+bazel configure --sync
 bazel help query
 bazel query --notool_deps --noimplicit_deps deps\(//:TargetName\) --output graph | apdot -Tpng | timg -
 bazel run //:target
 bazel shutdown
+bazel sync --configure
 below
 below replay --time '5 minutes ago'
 bind -P
+bq --project_id=project_id ls
+bq --project_id=project_id mk dataset_name
+bq --project_id=project_id rm dataset_name
+bq --project_id=project_id show dataset_name
 brew --prefix
 brew --repo
 brew --repo snyk/tap
@@ -144,6 +155,7 @@ brotli filename
 browserslist 'last 1 Chrome versions'
 btrfs subvolume list /data
 caffeinate -dims
+calicoctl --allow-version-mismatch --context=kube-context get clusterinformation --output=json
 cat ./*.tf | vipe --suffix=tf >/dev/null
 cat <(curl https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem) <(curl https://truststore.pki.us-gov-west-1.rds.amazonaws.com/global/global-bundle.pem) > ~/.postgresql/root.crt
 ccd2iso disk-image.bin disk-image.iso
@@ -161,11 +173,11 @@ comm -23 <(grep -P '^brew install (?!--cask )' ~/Code/Dotfiles/src/.bash_history
 command -V command
 command -v gnome-shell
 command ssh ssh.ankitpati.in
-convert -density 300 filename.pdf filename-%d.png
-convert -density 300 filename.pdf filename-reduced.pdf
-convert ./*.jpg output.pdf
 copyq info
 cpan-outdated -p | xargs cpanm; echo $?; pip list --outdated --format=freeze | cut -d= -f1 | grep -Ev '^(GDAL|python-poppler-qt5|slip|wxPython)$' | xargs pip install --user -U; echo $?; mypy --install-types; echo $?; cargo install-update -a; echo $?; npm update -g; echo $?; sdk selfupdate; echo $?; sdk update; echo $?; for java_sdk in $(grep '^sdk install ' ~/.bash_history | cut -d' ' -f3 | sort -u); do sdk upgrade "$java_sdk"; done; find ~/.sdkman/ -type f \( -name '*.exe' -o -name '*.bat' \) -delete; vim +PlugUpgrade +PlugUpdate +qa; nvim +PlugUpgrade +PlugUpdate +qa; for codext in $(code --list-extensions); do code --install-extension "$codext" --force; done; echo $?; flutter upgrade; echo $?; flutter doctor -v; echo $?; gcloud components update; echo $?; steampipe plugin update --all; echo $?; tldr --update; echo $?
+cpdf -draft -squeeze filename.pdf -o filename-draft-squeeze.pdf
+cpdf -draft filename.pdf -o filename-sans-images.pdf
+cpdf -squeeze filename.pdf -o filename-squeeze.pdf
 cpio -idv < filename.cpio
 crane catalog docker.io
 crane ls quay.io/ankitpati/tigress
@@ -235,6 +247,7 @@ df -h
 df -i
 diff -u5 -r directory1/ directory2/ | delta
 diff -x '*.asc' -x '*.lock.hcl' -x '*.tfstate' -x '.terraform' -x 'tfplan' -u5 -r terraform_directory1/ terraform_directory2/ | delta
+diff-pdf --grayscale --mark-differences --output-diff=diff.pdf --skip-identical --verbose filename1.pdf filename2.pdf
 dig -t ANY google.com
 dig -x 172.30.83.9
 dig -x ankitpati.in
@@ -289,6 +302,7 @@ docker-compose build
 docker-compose stop
 docker-compose up
 docker-credential-gcloud get <<<gcr.io | jq .
+dockerfilegraph --layers --legend --output=dot && apdot -Tpng < Dockerfile.dot | timg -
 dockviz images -d | apdot | timg -
 dockviz images -d | patchwork | apdot | timg -
 dockviz images -t
@@ -328,8 +342,7 @@ export JAVA_HOME="$(/usr/libexec/java_home --failfast --version=11)"
 export KUBECONFIG='kubeconfig.yaml'
 export P4CLIENT="$(p4 clients -u "$(p4 client -o | grep '^Owner:' | cut -f2)" | cut -d' ' -f1-5 | grep " /client/root\$" | cut -d' ' -f2)"
 export SRC_ACCESS_TOKEN="$(op read op://Private/sourcegraph_access_token/password)"
-eza --all --classify --git --group-directories-first --header --icons --inode --long
-eza --tree
+eza --all --classify --git --git-ignore --group-directories-first --header --icons --inode --long
 factor 1849
 fallocate -l 100M hundred-MiB-file
 fallocate -l 1K one-kb-file
@@ -376,6 +389,7 @@ find . -type f -name '*.expanded-csr' -exec openssl req -noout -text -in {} \; |
 find . -type f -name '*.lastUpdated' -delete
 find . -type f -name 'filename_with_ip_addresses' -exec grep --perl-regexp --only-matching --no-filename '(?:[0-9]+\.){3}[0-9]+/[0-9]+' {} + | sort --unique | while read -r subnet; do subnetcalc "$subnet" -n; done
 find . -type f -name requirements.txt -exec pip install -r {} \;
+find directory/with/jpegs/ -type f -iname '*.jpg' -print0 | rename --null 's{.*\.jpg$}{sprintf "numbered-jpegs/%03u.jpg", $a++}ei'
 find ~/.local/share/gem/ruby -mindepth 1 -maxdepth 1 -type d | sort -V
 find ~/Pictures/Photos Library.photoslibrary/originals/ -type f \( -name '*.heic' -o -name '*.mov' \) -exec cp --target-directory="$HOME/Pictures/Exported/" {} +
 firewall-cmd --add-forward-port=port=443:proto=tcp:toport=8443
@@ -400,6 +414,7 @@ fly auth signup
 for csr in *.csr; do mv -- "$csr" "$(openssl req -noout -subject -in "$csr" | grep --perl-regexp --only-matching '(?<=CN=)[^/,$]+').csr"; done
 for i in {0..127}; do printf '%u' "$i" | pbcopy; sleep 1; done
 for i in {0..20}; do src search -json '"exact_string"' | jq --raw-output --sort-keys '.Results[].repository.name'; done | sort --unique
+for i in {001..128}; do mv -- "certificate-$i.pdf" "${ pdftotext "certificate-$i.pdf" - | grep '^Dr\. ' | sed 's/\.//g'; }"; done
 foremost
 fpaste filename.txt
 free -h
@@ -498,6 +513,7 @@ git clean -ffdxn
 git clone --recurse-submodules https://example.org/repo-with-submodules.git
 git commit --allow-empty -m empty
 git commit --amend --gpg-sign --no-edit
+git commit --fixup=HEAD^
 git config --add credential.helper ''
 git config --show-origin --get credential.helper
 git config --show-origin credential.helper
@@ -579,7 +595,7 @@ grep -Elr -- '^(<<<<<<< HEAD|=======|>>>>>>> [[:xdigit:]]+ .*)$' | sort -u | xar
 grep -l search-string -r . | xargs --open-tty vim
 gron --ungron filename.gron > filename.json
 gron filename.json > filename.gron
-gs -sDEVICE=pdfwrite -dCompatibilityLevel=1.7 -dPDFSETTINGS=/screen -dNOPAUSE -dQUIET -dBATCH -sOutputFile=filename.pdf filename-reduced.pdf
+gs -sDEVICE=pdfwrite -dCompatibilityLevel=1.7 -dPDFSETTINGS=/screen -dNOPAUSE -dQUIET -dBATCH -sOutputFile=filename-reduced.pdf filename.pdf
 gsettings set org.gnome.shell.app-switcher current-workspace-only true
 gsutil cat gs://bucket-name/path/to/filename # $bucket_name =~ /^[a-z](?:[-a-z0-9]{4,28}[a-z0-9])$/
 gsutil cp gs://bucket-name/path/to/filename ./
@@ -776,7 +792,8 @@ kubectl get configmaps --selector=owner=helm
 kubectl get deployment/deployment_name --output=json | jq '.spec.template.spec.containers[1].livenessProbe'
 kubectl get deployment/deployment_name --output=json | jq --raw-output '.spec.template.spec.containers[] | select(has("livenessProbe")) | "Liveness Timeout: \(.livenessProbe.timeoutSeconds)\nReadiness Timeout: \(.readinessProbe.timeoutSeconds)"'
 kubectl get events --output=jsonpath='{range .items[?(@.type=="Warning")]}{.metadata.name}{"\t"}{.message}{"\n"}{end}'
-kubectl get gateway/mirror --context=mirror-us-central1-abs-0 --namespace=istio-system --output=yaml | yq '.spec.servers[2].hosts'
+kubectl get gateway/gw_name --context=kube-context --namespace=istio-system --output=yaml | yq '.spec.servers[2].hosts'
+kubectl get horizontalpodautoscaler/hpa_name --output=jsonpath='{.spec}' | jq 'with_entries(select(.key | match("Replicas$")))'
 kubectl get namespace/default --output=json | jq '.metadata.labels."istio.io/dataplane-mode"'
 kubectl get namespaces --label-columns=istio.io/rev,istio-injection
 kubectl get namespaces --show-labels
@@ -799,6 +816,7 @@ kubectl get pods --namespace=istio-system --selector=app=istiod
 kubectl get pods --output=custom-columns=pods:.metadata.name | grep deployment_name | sort --version-sort | while read -r pod; do kubectl top pod/"$pod" --no-headers; done
 kubectl get pods --output=json | jq --raw-output '[.items[].spec.containers[].image] | unique[]'
 kubectl get pods --selector="$(kubectl get service/service_name --output=yaml | yq .spec.selector | sed 's/: /=/')"
+kubectl get pods --selector=app.kubernetes.io/component=buildfarm-server --output=NAME | ( timestamp=${ printf '%(%s)T' -1; }; while read -r pod; do kubectl exec "$pod" -- sh -c '/jdk/bin/jstack -e -l `pgrep --oldest java`' > "$timestamp-${pod#*/}.jstack" & done; wait )
 kubectl get pods --selector=app.kubernetes.io/name=app_name --output=json | jq --raw-output '.items[].spec.nodeName' | sort --unique | while read -r node_name; do printf '%s,' "$node_name"; kubectl get "node/$node_name" --output=json | jq --raw-output '[.status.nodeInfo.kubeProxyVersion, .status.nodeInfo.kubeletVersion] | join(",")'; done
 kubectl get pods --selector=app=app_name
 kubectl get pods --selector=app=app_name --output=name | while read -r pod_name; do kubectl logs "$pod_name" --container=container_name --follow & done; wait
@@ -840,6 +858,7 @@ latest-version spectron
 launchctl list
 launchctl load /System/Library/LaunchDaemons/ssh.plist
 launchctl setenv SOME_ENV_VAR 'Some Value'
+launchctl unload -w "gui/$UID/org.example.daemon"
 launchctl unload /System/Library/LaunchDaemons/ssh.plist
 launchctl unsetenv SOME_ENV_VAR
 limitcpu
@@ -880,7 +899,14 @@ lsusb
 luarocks completion bash
 luarocks path
 luarocks show dump
+magick -density 300 filename.pdf -flatten filename-%d.jpg
+magick -density 300 filename.pdf -quality 100 -flatten -sharpen 0x1.0 filename-%d.jpg
 magick -density 300 filename.pdf filename-%d.png
+magick -density 300 filename.pdf filename-reduced.pdf
+magick ./*.jpg filename.pdf
+magick filename.jpg -resize 50% filename-reduced.jpg
+magick filename.png -flatten filename.jpg
+magick filename.png -fuzz 30% -transparent white filename-transparent.png
 makewhatis "$PREFIX/share/man"
 mapfile -t < newline-separated-item-list.txt
 markdownlint '**/*.md' 2> errors.txt
@@ -890,6 +916,7 @@ massren -u path/to/directory
 mdfind -name '.csv'
 mdfind -name 'log4j' | ack -i '(?<!\.)2\..*\.jar$'
 mergiraf languages --gitattributes | sort --unique >> ~/.gitattributes
+mergiraf review filename.json_A1BCd2EF
 meson x --buildtype release --strip -Db_lto=true
 microk8s kubectl get all --all-namespaces
 microk8s status --wait-ready
@@ -912,6 +939,8 @@ mvn --debug --errors versions:set -DnextSnapshot=true
 mvn --encrypt-master-password 'maven-master-password'
 mvn --encrypt-password 'maven-server-password'
 mvn --update-snapshots clean install -Dmaven.test.skip=true -Ddependency-check.skip=true -Dpmd.skip=true
+mvn --update-snapshots clean install -Dmaven.test.skip=true -Ddependency-check.skip=true -Dpmd.skip=true -Dlicense.skip=true
+mvn --update-snapshots clean install -Dmaven.test.skip=true -Ddependency-check.skip=true -Dpmd.skip=true -Dlicense.skip=true -Dtrust_all_cert=true -Dcom.sun.net.ssl.checkRevocation=false -Dtrust_all_cert=true
 mvn -U dependency:tree
 mvn exec:java -Dexec.mainClass=in.ankitpati.ClassName
 mvn help:effective-pom
@@ -955,6 +984,7 @@ objdump -S elf-binary-filename
 objdump -d elf-binary-filename
 objdump -g elf-binary-filename
 objdump -r elf-binary-filename
+ocrmypdf filename.pdf filename-ocr.pdf
 op read op://Private/docker_personal_access_token/password | crane auth login docker.io -u "$(op read op://Private/docker_personal_access_token/username)" --password-stdin
 op read op://Private/docker_personal_access_token/password | docker login -u "$(op read op://Private/docker_personal_access_token/username)" --password-stdin
 op read op://Private/docker_personal_access_token/password | skopeo login docker.io --tls-verify -u "$(op read op://Private/docker_personal_access_token/username)" --password-stdin
@@ -966,6 +996,7 @@ op read op://Private/unique_name/username
 op vault list
 openfortivpn fortigate.ankitpati.in -u ankitpati -p SecretPassword -o 012345
 openssl asn1parse -in openssl.key
+openssl enc -aes-256-cbc -d -base64 -A -md md5 -k redacted -nosalt
 openssl genpkey -algorithm Ed25519 -out root.key
 openssl genpkey -algorithm RSA -aes128 -out openssl.key
 openssl genrsa 2048 -out openssl.key
@@ -1028,8 +1059,9 @@ p4 clients -e 'boron*'
 p4 clients -e boron_workstation
 p4 delete -nc 12345 //depot/directory/filename
 p4 describe -Odu5 12345 | delta
-p4 describe -Sdu5 "$(p4 changes -u "$USER" | grep --fixed-strings ' *pending* ' | head --lines=1 | cut --delimiter=' ' --fields=2)" | delta
-p4 describe -Sdu5 12345 | delta
+p4 describe -Sadu5 "${ p4 changes -u "$USER" | grep --fixed-strings ' *pending* ' | head --lines=1 | cut --delimiter=' ' --fields=2; }" | delta
+p4 describe -Sadu5 "${ swarm-review-to-changelist 12345; }" | delta
+p4 describe -Sadu5 12345 | delta
 p4 describe -a 12345 | less
 p4 describe -du5 12345 | delta
 p4 describe -du5 default | delta
@@ -1121,6 +1153,7 @@ patch filename.c filename.c.patch
 pavumeter --record
 pbcopy < ~/.ssh/id_ed25519.pub
 pbpaste > ~/.ssh/authorized_keys
+pbpaste | sed 's/\xc2\xa0/ /g' | yq to_json | jq .
 pdf2svg filename.pdf filename-%d.svg all
 pdffonts filename.pdf
 pdfimages -all filename.pdf ./
@@ -1128,6 +1161,7 @@ pdfimages -j filename.pdf ./
 pdfimages filename.pdf ./
 pdfinfo filename.pdf
 pdftk filename.pdf cat 123-end output filename-trimmed.pdf
+pdftocairo -svg filename.pdf filename.svg
 perl -0pE '$_ = "[" . join(",", /\{.*?}/gms) . "]"' < file-with-JSON-scattered-between-other-data.txt | jq '.[] | "\(.firstname) \(.lastname)"'
 perl -0pE 's/^(resource "google_kms_crypto_key" "example-key" {.*?^)(\s+lifecycle {.*?})/"$1".($2 =~ s{^}{#}rsmg)/esm' -i google-kms.tf
 perl -MModern::Perl=2020 -dE 0
@@ -1155,6 +1189,7 @@ pidof -s chrome
 pidof chrome
 ping -s 1500 ankitpati.in
 pip freeze | cut --delimiter='=' --fields=1 | xargs pip install --upgrade
+pip install --requirement requirements.txt
 pip install --upgrade 'pip < 21'
 pip install -r requirements.txt
 pip install black[python2]==21.12b0 # last Python 2-compatible Black
@@ -1175,6 +1210,7 @@ pluto detect-all-in-cluster
 pmset -g
 pmset -g log
 pmset -g therm
+pngquant --ext=.reduced.png --speed=1 --strip --verbose filename.png
 pod2pdf path/to/Perl/Module.pm > Perl-Module-docs.pdf
 podchecker path/to/Perl/Module.pm
 podlinkcheck path/to/Perl/Module.pm
@@ -1238,6 +1274,7 @@ popd -0
 popd -1
 popd -4
 potrace filename.png
+prettier --log-level=silent --parser=yaml --write -- *.yaml
 prettier -w filename.css
 prettier -w filename.html
 prettier -w filename.js
@@ -1293,11 +1330,13 @@ range2cidr 1.1.1.0-1.1.1.255
 readelf -x .rodata elf-binary-filename
 readlink -e path/to/directory/
 readlink -f path/to/filename
+rename -n 's/^00([0-9])-/0${1}0-/' *.sh
 rename -n 's/^\d+_\d+_0(\d)_[^a-z]+_(\w+)\.mp4$/$1. $2.mp4/' -- *
 resolvectl flush-caches
 resolvectl query ankitpati.in
 resolvectl status
 restorecon -rvn /etc/X11/xorg.conf.d/
+rg --case-sensitive --sort=path --pcre2 '\b(?<![*$<>-])id(?!(?:[.,=-]| [{[+=]))\b'
 rg --pcre2 --ignore-case --only-matching --no-filename --no-line-number '(?<= image: .*cent.*).*$' | cut --delimiter="'" --fields=2 | cut --delimiter=: --fields=1 | sort --unique
 rg -F -- '$_ =~ '
 rg -L search-string
@@ -1316,6 +1355,7 @@ rpm2cpio ../filename.rpm | cpio -idmv
 rpm2cpio filename.rpm > filename.cpio
 rpmconf -a -f vimdiff
 rpmconf -c
+rsvg-convert --format=pdf1.7 --output=filename.pdf filename.svg
 scour filename.svg filename-scour.svg -v --no-renderer-workaround --strip-xml-prolog --remove-titles --remove-descriptions --remove-metadata --remove-descriptive-elements --enable-comment-stripping --disable-embed-rasters --enable-viewboxing --indent=none --no-line-breaks --strip-xml-space --enable-id-stripping --shorten-ids
 scrcpy --force-adb-forward -b 1000
 scrcpy -b 1000
@@ -1430,7 +1470,9 @@ sudo kubectl port-forward pod_name 80:8080
 sudo powermetrics --samplers smc
 sudo rm /Library/Internet\ Plug-Ins/{.,}*
 sudo usermod -a -G microk8s "$USER"
+svg-path-transpose --dx 8 'M 395.132812 300.300781 L 395.132812 299.554688 C 395.386719 299.554688 395.601562 299.53125 395.769531 299.492188 C 395.941406 299.449219 396.101562 299.378906 396.25 299.277344 C 396.398438 299.175781 396.472656 298.890625 396.472656 298.417969 L 396.472656 293.363281 C 396.472656 292.863281 396.398438 292.546875 396.25 292.414062 C 396.101562 292.273438 395.941406 292.183594 395.769531 292.132812 C 395.601562 292.082031 395.386719 292.058594 395.132812 292.058594 L 395.132812 291.3125 C 395.316406 291.3125 395.730469 291.261719 396.367188 291.164062 C 397.007812 291.0625 397.59375 290.976562 398.132812 290.910156 L 398.476562 290.800781 L 398.835938 290.695312 C 398.9375 290.667969 399.046875 290.644531 399.167969 290.632812 C 399.289062 290.617188 399.398438 290.609375 399.496094 290.609375 L 399.496094 298.417969 C 399.496094 298.917969 399.574219 299.214844 399.734375 299.308594 C 399.886719 299.402344 400.042969 299.464844 400.199219 299.503906 C 400.355469 299.535156 400.570312 299.554688 400.839844 299.554688 L 400.839844 300.300781 Z M 396.347656 286.203125 C 396.472656 285.875 396.660156 285.625 396.910156 285.445312 C 397.160156 285.265625 397.453125 285.179688 397.792969 285.179688 C 398.09375 285.179688 398.363281 285.25 398.601562 285.390625 C 398.859375 285.507812 399.074219 285.6875 399.242188 285.933594 C 399.414062 286.183594 399.496094 286.457031 399.496094 286.753906 L 399.496094 287.117188 C 399.414062 287.53125 399.226562 287.84375 398.949219 288.0625 C 398.667969 288.285156 398.347656 288.394531 397.984375 288.394531 C 397.710938 288.394531 397.429688 288.324219 397.132812 288.183594 C 396.839844 288.039062 396.613281 287.863281 396.453125 287.652344 C 396.296875 287.4375 396.21875 287.167969 396.21875 286.839844 C 396.21875 286.769531 396.222656 286.683594 396.230469 286.574219 C 396.234375 286.46875 396.273438 286.34375 396.347656 286.203125 '
 svg2png filename.svg
+svgo --config="$HOME/.config/svgo/svgo.config.mjs" filename.svg
 systemctl --user enable --now podman.socket
 systemctl --user status podman.socket
 systemctl disable --now avahi-daemon.service
@@ -1452,6 +1494,8 @@ systemctl status snap.microk8s.daemon-containerd.service
 systemctl stop gdm.service
 systemd-analyze cat-config systemd/resolved.conf
 tail --lines=+2 brew-deps.csv | cut -d, -f1 | comm -23 - brew-install-list.txt | while read -r brew_formula; do grep "^$brew_formula" brew-deps.csv; done
+tar --create --file=filename.tar directory/
+tar --extract --file=filename.tar --directory=directory/
 tar --list --file=filename.tar
 tccutil reset ScreenCapture com.google.Chrome
 telnet google.com & telnet_pid="$!" && ( sleep 5; kill "$telnet_pid" ) && fg; unset telnet_pid
@@ -1508,6 +1552,7 @@ ugrep -Q -.
 umount /data
 uname -a
 uname -r
+units "${ kubectl get node "${ kubectl get pods --selector=app.kubernetes.io/component=buildfarm-server --output=jsonpath='{.items[0].spec.nodeName}'; }" --output=jsonpath='{.status.capacity.memory}'; }B" GiB
 unix2dos filename.txt
 update-desktop-database
 update-mime-database
@@ -1596,10 +1641,12 @@ yapf -i filename.py
 yasql user/pass@orclalias
 youtube-dl https://www.youtube.com/watch?v=VIDEO_ID -F
 youtube-dl https://www.youtube.com/watch?v=VIDEO_ID -f 248
+yq --inplace '.["current-context"] = ""' ~/.kube/config
 yq -P < filename.yaml
 yq @json < filename.yaml | jq --sort-keys . > filename.json
 yq eval-all '[.] | to_json' < filename.yaml > filename.json
 zbarimg filename.jpg > filename.dat
+zip --recurse-paths filename.zip directory/
 zlib-flate -uncompress < filename.dfl > filename.txt
 zypper --gpg-auto-import-keys refresh
 zypper addrepo --refresh https://download.opensuse.org/repositories/system:/snappy/openSUSE_Tumbleweed snappy
