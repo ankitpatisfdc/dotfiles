@@ -52,12 +52,12 @@
 |2,0,0,,"noh"
 |2,0,0,,"perldo s{q\\[/.*?(\\w+)\\]}{q[$1]}"
 |2,0,0,,"reg"
+|2,0,0,,"set filetype=bash"
 |2,0,0,,"set filetype=bindzone"
+|2,0,0,,"set filetype?"
 |2,0,0,,"set noautoread"
 |2,0,0,,"set nopaste"
 |2,0,0,,"set paste"
-|2,0,0,,"set syntax=bash"
-|2,0,0,,"set syntax?"
 |2,0,0,,"version"
 |2,0,0,,"vs filename.c"
 |2,0,0,,"windo :diffthis"
@@ -74,6 +74,7 @@
 # Debug Line History (newest to oldest):
 
 # Registers:
+|3,0,11,0,1,0,0,"/\\$(l%s; }€ý5s{ €ý5"
 
 # global variables:
 
