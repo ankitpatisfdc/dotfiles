@@ -3,16 +3,16 @@
 ( GH_ORIGIN='origin'; PULL_REQUEST_ID='12345'; BRANCH_NAME='foo-bar'; git fetch "$GH_ORIGIN" "pull/$PULL_REQUEST_ID/head:$BRANCH_NAME" && git checkout "$BRANCH_NAME" )
 ( GH_ORIGIN='origin'; PULL_REQUEST_ID='12345'; git fetch "$GH_ORIGIN" "pull/$PULL_REQUEST_ID/head" )
 ( GH_ORIGIN='origin'; PULL_REQUEST_ID='12345'; git pull "$GH_ORIGIN" "pull/$PULL_REQUEST_ID/head" )
-( GH_USERNAME='ankitpati'; age -r "$(curl --header "Authorization: token $(op read op://Private/github_personal_access_token/password)" "https://github.example.org/api/v3/users/$GH_USERNAME/keys" | jq --raw-output .[0].key)" --output cipher.txt.age plain.txt )
-( GH_USERNAME='ankitpati'; curl --silent "https://api.github.com/users/$GH_USERNAME/repos?per_page=$(curl --silent "https://api.github.com/users/$GH_USERNAME" | jq --raw-output .public_repos)" ) | jq --raw-output0 '.[].html_url + ".git"' | xargs --no-run-if-empty --null --max-args 1 git clone --recurse-submodules
-( filename=depot/directory/filename; p4 sync "$filename#$(( "$(p4 have "$filename" | cut -d# -f2 | cut -d' ' -f1)" - 1 ))" )
+( GH_USERNAME='ankitpati'; age -r "${ curl --header "Authorization: token ${ op read op://Private/github_personal_access_token/password; }" "https://github.example.org/api/v3/users/$GH_USERNAME/keys" | jq --raw-output .[0].key; }" --output cipher.txt.age plain.txt )
+( GH_USERNAME='ankitpati'; curl --silent "https://api.github.com/users/$GH_USERNAME/repos?per_page=${ curl --silent "https://api.github.com/users/$GH_USERNAME" | jq --raw-output .public_repos; }" ) | jq --raw-output0 '.[].html_url + ".git"' | xargs --no-run-if-empty --null --max-args 1 git clone --recurse-submodules
+( filename=depot/directory/filename; p4 sync "$filename#$(( "${ p4 have "$filename" | cut -d# -f2 | cut -d' ' -f1; }" - 1 ))" )
 ( find . -type f -iname '*.py' ; grep --ignore-case --files-with-matches --extended-regexp '/(env )?python' --recursive . 2>/dev/null ) | sort --unique | xargs --open-tty vim
 ( hostname='google.com'; openssl s_client -auth_level 2 -connect "$hostname":443 -servername "$hostname" -verify_hostname "$hostname" -verify_return_error )
 ( hostname='google.com'; openssl s_client -tls1_3 -auth_level 2 -connect "$hostname":443 -servername "$hostname" -verify_hostname "$hostname" -verify_return_error )
 ( perforce_dir=//depot/directory; p4 dirs "$perforce_dir/*" | while read -r perforce_subdir; do p4 grep -e 'search-expression' "$perforce_subdir/..."; done )
 ( perforce_dir=//depot/directory; p4 dirs "$perforce_dir/*"; p4 sizes -sh "$perforce_dir/..." )
 ( ssh_private_key_file=id_ed25519; ssh-keygen -l -v -f "$ssh_private_key_file" && ssh-keygen -y -f "$ssh_private_key_file" && cat "$ssh_private_key_file" )
-( unalias -a; comm -12 <(hash -r; ls {,/usr}/{,s}bin/ | xargs command -V 2>/dev/null | grep -Ev " is ($(brew --prefix)/|a shell (builtin|keyword))" | cut -d' ' -f1 | sort -u) <(ls "$(brew --repo)/Library/Taps/homebrew/homebrew-core/Formula/" | rev | cut -d. -f2- | rev | sort -u) )
+( unalias -a; comm -12 <(hash -r; ls {,/usr}/{,s}bin/ | xargs command -V 2>/dev/null | grep -Ev " is (${ brew --prefix; }/|a shell (builtin|keyword))" | cut -d' ' -f1 | sort -u) <(ls "${ brew --repo; }/Library/Taps/homebrew/homebrew-core/Formula/" | rev | cut -d. -f2- | rev | sort -u) )
 ./manage.py check auth admin forum
 ./manage.py dbshell
 ./manage.py makemigrations
@@ -28,8 +28,8 @@
 /usr/libexec/java_home --version=1.8
 CLASSPATH=. java ClassName
 GIT_COMMITTER_NAME='Ankit Pati' GIT_COMMITTER_EMAIL='contact@ankitpati.in' git rebase branchname --exec 'git commit --amend --author="Ankit Pati <contact@ankitpati.in>" --no-edit --no-gpg-sign'
-HTTPS_PROXY="$(jq --raw-output '.proxies."https-proxy"' < ~/.docker/daemon.json)" NO_PROXY="$(jq --raw-output '.proxies."no-proxy"' < ~/.docker/daemon.json)" skopeo sync --dry-run --override-arch amd64 --override-os linux --src docker --dest docker docker.io/library/busybox gcr.io/project_id/namespace/
-HTTPS_PROXY="$(jq --raw-output '.proxies."https-proxy"' < ~/.docker/daemon.json)" NO_PROXY="$(jq --raw-output '.proxies."no-proxy"' < ~/.docker/daemon.json)" skopeo sync --dry-run --override-arch amd64 --override-os linux --src docker --dest docker docker.io/library/busybox:latest gcr.io/project_id/namespace/
+HTTPS_PROXY="${ jq --raw-output '.proxies."https-proxy"' < ~/.docker/daemon.json; }" NO_PROXY="${ jq --raw-output '.proxies."no-proxy"' < ~/.docker/daemon.json; }" skopeo sync --dry-run --override-arch amd64 --override-os linux --src docker --dest docker docker.io/library/busybox gcr.io/project_id/namespace/
+HTTPS_PROXY="${ jq --raw-output '.proxies."https-proxy"' < ~/.docker/daemon.json; }" NO_PROXY="${ jq --raw-output '.proxies."no-proxy"' < ~/.docker/daemon.json; }" skopeo sync --dry-run --override-arch amd64 --override-os linux --src docker --dest docker docker.io/library/busybox:latest gcr.io/project_id/namespace/
 KUBECONFIG="$PWD/kubeconfig.yaml:$HOME/.kube/config" kubectl config view --merge --flatten | sponge ~/.kube/config
 LESS='-I' git log --graph --pretty=fuller --show-signature
 P4DIFF=vimdiff p4 diff -Od -f //depot/directory/...
@@ -49,7 +49,7 @@ Xvfb :99 -screen 0 1024x768x24
 \ssh ssh.ankitpati.in
 aa-status
 ack '(?<=^B: ).*$'
-adb logcat --pid="$(adb shell pidof -s in.ankitpati.gparse | cut -d' ' -f1)"
+adb logcat --pid="${ adb shell pidof -s in.ankitpati.gparse | cut -d' ' -f1; }"
 adb logcat -c && adb logcat > current.log
 adb shell pm grant com.oasisfeng.island android.permission.GET_APP_OPS_STATS
 adb shell pm list packages
@@ -64,7 +64,7 @@ alternatives --config java
 alternatives --config javac
 alternatives --config jre_openjdk
 alternatives --list
-alternatives --set editor "$(command -v vim)"
+alternatives --set editor "${ command -v vim; }"
 apdot filename.dot -Tpng | timg -
 apktool d filename.apk
 apt -o APT::Get::Always-Include-Phased-Updates=true full-upgrade
@@ -91,7 +91,7 @@ arkade install --print-table
 arkade install istio
 banner Type your message here.
 base64 --wrap=0 filename
-bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+bash -c "${ curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh; }"
 bash -c 'dscacheutil -flushcache; killall -HUP mDNSResponder'
 bash <(curl https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh | perl -0pE 's/^have_sudo_access\(\) {.*?^}/have_sudo_access() { HAVE_SUDO_ACCESS=0; return 0; }/sm' | perl -0pE 's/^execute_sudo\(\) {.*?^}/execute_sudo() { ohai "\$\@"; execute "\$\@"; }/sm')
 bat --config-dir
@@ -161,7 +161,7 @@ cat <(curl https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem) <(
 ccd2iso disk-image.bin disk-image.iso
 checkstyle -c /google_checks.xml Filename.java
 checkstyle -c /sun_checks.xml Filename.java
-chsh -s "$(brew --prefix)/bin/bash"
+chsh -s "${ brew --prefix; }/bin/bash"
 ciphey -f filename.txt
 ciphey -gf filename.txt | grep hello
 code --install-extension ./filename.vsix
@@ -174,7 +174,7 @@ command -V command
 command -v gnome-shell
 command ssh ssh.ankitpati.in
 copyq info
-cpan-outdated -p | xargs cpanm; echo $?; pip list --outdated --format=freeze | cut -d= -f1 | grep -Ev '^(GDAL|python-poppler-qt5|slip|wxPython)$' | xargs pip install --user -U; echo $?; mypy --install-types; echo $?; cargo install-update -a; echo $?; npm update -g; echo $?; sdk selfupdate; echo $?; sdk update; echo $?; for java_sdk in $(grep '^sdk install ' ~/.bash_history | cut -d' ' -f3 | sort -u); do sdk upgrade "$java_sdk"; done; find ~/.sdkman/ -type f \( -name '*.exe' -o -name '*.bat' \) -delete; vim +PlugUpgrade +PlugUpdate +qa; nvim +PlugUpgrade +PlugUpdate +qa; for codext in $(code --list-extensions); do code --install-extension "$codext" --force; done; echo $?; flutter upgrade; echo $?; flutter doctor -v; echo $?; gcloud components update; echo $?; steampipe plugin update --all; echo $?; tldr --update; echo $?
+cpan-outdated -p | xargs cpanm; echo $?; pip list --outdated --format=freeze | cut -d= -f1 | grep -Ev '^(GDAL|python-poppler-qt5|slip|wxPython)$' | xargs pip install --user -U; echo $?; mypy --install-types; echo $?; cargo install-update -a; echo $?; npm update -g; echo $?; sdk selfupdate; echo $?; sdk update; echo $?; for java_sdk in ${ grep '^sdk install ' ~/.bash_history | cut -d' ' -f3 | sort -u; }; do sdk upgrade "$java_sdk"; done; find ~/.sdkman/ -type f \( -name '*.exe' -o -name '*.bat' \) -delete; vim +PlugUpgrade +PlugUpdate +qa; nvim +PlugUpgrade +PlugUpdate +qa; for codext in ${ code --list-extensions; }; do code --install-extension "$codext" --force; done; echo $?; flutter upgrade; echo $?; flutter doctor -v; echo $?; gcloud components update; echo $?; steampipe plugin update --all; echo $?; tldr --update; echo $?
 cpdf -draft -squeeze filename.pdf -o filename-draft-squeeze.pdf
 cpdf -draft filename.pdf -o filename-sans-images.pdf
 cpdf -squeeze filename.pdf -o filename-squeeze.pdf
@@ -198,8 +198,8 @@ curl --data '{"commit":"6879efc2c1596d11a6a6ad296f80063b558d5e0f"}' https://api.
 curl --data '{"version":"2.4.1","package":{"name":"jinja2","ecosystem":"PyPI"}}' https://api.osv.dev/v1/query | jq .
 curl --head --header 'Accept: application/json, */*' --output /dev/null --silent --write-out 'scale = 3; (%{size_header} + %{size_download}) / %{size_request}\n' 'https://example.org' | bc
 curl --head https://example.org/filename
-curl --header "Authorization: token $(op read op://Private/github_personal_access_token/password)" --remote-name https://github.example.org/raw/namespace/repo_name/branch_name/path/to/filename
-curl --header "Authorization: token $(op read op://Private/github_personal_access_token/password)" --remote-name https://raw.githubusercontent.com/namespace/repo_name/branch_name/path/to/filename
+curl --header "Authorization: token ${ op read op://Private/github_personal_access_token/password; }" --remote-name https://github.example.org/raw/namespace/repo_name/branch_name/path/to/filename
+curl --header "Authorization: token ${ op read op://Private/github_personal_access_token/password; }" --remote-name https://raw.githubusercontent.com/namespace/repo_name/branch_name/path/to/filename
 curl --header 'Accept: application/json, */*' --output /dev/null --silent --write-out 'scale = 3; (%{size_header} + %{size_download}) / %{size_request}\n' 'https://example.org' | bc
 curl --header 'Authorization: Bearer QQ==' --output blob 'https://ghcr.io/v2/path/to/project/blobs/sha256:0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef'
 curl --key openssl.key --cert openssl.crt https://mtls.example.org
@@ -207,12 +207,12 @@ curl --netrc https://github.example.org/api/v3/user
 curl --proxytunnel --proxy https://squid.ankitpati.in:1080 https://ankitpati.in
 curl --remote-name https://ankitpati.in/download?file=filename.c
 curl --resolve example.org:80:127.0.0.1 http://example.org
-curl --silent --header "Authorization: Bearer $(gcloud auth application-default print-access-token)" 'https://www.googleapis.com/compute/v1/projects/project_id/zones/us-west1-a/instanceGroups/k8s-ig--0000000000000000' | jq .
+curl --silent --header "Authorization: Bearer ${ gcloud auth application-default print-access-token; }" 'https://www.googleapis.com/compute/v1/projects/project_id/zones/us-west1-a/instanceGroups/k8s-ig--0000000000000000' | jq .
 curl --silent --include https://example.org | head --lines=1 | cut -d' ' -f2
 curl --silent https://www.toptal.com/developers/gitignore/api/list | tr , '\n'; echo
 curl --verbose --location 'https://example.org/12345' 2>&1 | dos2unix | grep --only-matching --perl-regexp '(?<=^< location: ).*$' | grep --colour 12345
 curl --write-out '\n%{time_total} - %{time_starttransfer}\n' https://httpbin.org/get | tail --lines=1 | bc
-curl http://localhost:8001 | jq --raw-output '.["paths"][]' | while read -r k8s_api_endpoint; do printf '\n## `%s`\n\n```json\n%s\n```\n' "$k8s_api_endpoint" "$(curl "http://localhost:8001$k8s_api_endpoint")"; done > kubernetes_api_record.md
+curl http://localhost:8001 | jq --raw-output '.["paths"][]' | while read -r k8s_api_endpoint; do printf '\n## `%s`\n\n```json\n%s\n```\n' "$k8s_api_endpoint" "${ curl "http://localhost:8001$k8s_api_endpoint"; }"; done > kubernetes_api_record.md
 curl https://ankitpati.in/gpg.asc --output /etc/apt/trusted.gpg.d/ankitpati.asc
 curl https://apt.ankitpati.in/ankitpati.list --output /etc/apt/sources.list.d/ankitpati.list
 curl https://github.com/web-flow.gpg | gpg --import
@@ -290,14 +290,14 @@ docker buildx create --name=builder_name --driver=docker-container --config=buil
 docker buildx inspect --bootstrap
 docker buildx ls
 docker buildx rm builder_name
-docker images --format=json | jq --raw-output 'select(.Repository | endswith("'"$(git remote get-url --no-push origin | rev | cut --delimiter=/ --fields=1,2 | cut --delimiter=. --fields=2- | rev)"'")) | "\(.Repository):\(.Tag)"' | xargs docker image rm --
+docker images --format=json | jq --raw-output 'select(.Repository | endswith("'"${ git remote get-url --no-push origin | rev | cut --delimiter=/ --fields=1,2 | cut --delimiter=. --fields=2- | rev; }"'")) | "\(.Repository):\(.Tag)"' | xargs docker image rm --
 docker network inspect bridge | jq --raw-output '.[].IPAM.Config[].Subnet'
 docker network list --quiet | xargs --no-run-if-empty docker network inspect --verbose
 docker run --interactive --pid=host --privileged --pull=always --rm --tty busybox nsenter --ipc --mount --net --target=1 --uts # Linuxkit access on Docker for Mac
 docker scan --accept-license --version
-docker scan --login --token="$(op read op://Private/snyk_auth_token/password)"
+docker scan --login --token="${ op read op://Private/snyk_auth_token/password; }"
 docker scan image_name
-docker tag image:tag "image:$(printf '%(%s)T' -1)-$(git rev-parse --short HEAD)"
+docker tag image:tag "image:${ printf '%(%s)T' -1; }-${ git rev-parse --short HEAD; }"
 docker-compose build
 docker-compose stop
 docker-compose up
@@ -336,12 +336,12 @@ exec sudo -i
 exec sudo -u ankitpati -i
 exiftool -p '$XResolution,$YResolution' filename.jpg
 export DISPLAY=':99.0'
-export GH_TOKEN="$(op read op://Private/github_personal_access_token/password)"
-export GITHUB_PERSONAL_ACCESS_TOKEN="$(op read op://Private/github_personal_access_token/password)"
-export JAVA_HOME="$(/usr/libexec/java_home --failfast --version=11)"
+export GH_TOKEN="${ op read op://Private/github_personal_access_token/password; }"
+export GITHUB_PERSONAL_ACCESS_TOKEN="${ op read op://Private/github_personal_access_token/password; }"
+export JAVA_HOME="${ /usr/libexec/java_home --failfast --version=11; }"
 export KUBECONFIG='kubeconfig.yaml'
-export P4CLIENT="$(p4 clients -u "$(p4 client -o | grep '^Owner:' | cut -f2)" | cut -d' ' -f1-5 | grep " /client/root\$" | cut -d' ' -f2)"
-export SRC_ACCESS_TOKEN="$(op read op://Private/sourcegraph_access_token/password)"
+export P4CLIENT="${ p4 clients -u "${ p4 client -o | grep '^Owner:' | cut -f2; }" | cut -d' ' -f1-5 | grep " /client/root\$" | cut -d' ' -f2; }"
+export SRC_ACCESS_TOKEN="${ op read op://Private/sourcegraph_access_token/password; }"
 eza --all --classify --git --git-ignore --group-directories-first --header --icons --inode --long
 factor 1849
 fallocate -l 100M hundred-MiB-file
@@ -411,7 +411,7 @@ flatpak uninstall org.freedesktop.Platform.GL.nvidia-465-24-02
 flutter config --no-analytics
 flutter doctor -v
 fly auth signup
-for csr in *.csr; do mv -- "$csr" "$(openssl req -noout -subject -in "$csr" | grep --perl-regexp --only-matching '(?<=CN=)[^/,$]+').csr"; done
+for csr in *.csr; do mv -- "$csr" "${ openssl req -noout -subject -in "$csr" | grep --perl-regexp --only-matching '(?<=CN=)[^/,$]+'; }.csr"; done
 for i in {0..127}; do printf '%u' "$i" | pbcopy; sleep 1; done
 for i in {0..20}; do src search -json '"exact_string"' | jq --raw-output --sort-keys '.Results[].repository.name'; done | sort --unique
 for i in {001..128}; do mv -- "certificate-$i.pdf" "${ pdftotext "certificate-$i.pdf" - | grep '^Dr\. ' | sed 's/\.//g'; }"; done
@@ -436,7 +436,7 @@ gcloud components install gke-gcloud-auth-plugin
 gcloud components list
 gcloud components repositories list
 gcloud compute addresses list --project=project_id --filter='name:instance_name' --format='table(name,address)'
-gcloud compute backend-services list --filter=name="($(gcloud compute forwarding-rules list --filter=IPAddress='(10.10.10.10)' --format=json'(name)' | jq --raw-output .[0].name))" --format=json'(backends)' | jq '.[0].backends[]'
+gcloud compute backend-services list --filter=name="(${ gcloud compute forwarding-rules list --filter=IPAddress='(10.10.10.10)' --format=json'(name)' | jq --raw-output .[0].name; })" --format=json'(backends)' | jq '.[0].backends[]'
 gcloud compute connect-to-serial-port instance_name --project=project_id --zone=us-west1-a --port=1
 gcloud compute disks resize instance_name --project=project_id --zone=us-west1-a --size=25GB
 gcloud compute firewall-rules list --format=json --filter='allowed.ports[0] = ("1234") AND allowed.ports[1] = ("2345")' | jq .
@@ -445,7 +445,7 @@ gcloud compute images create image_name --project=project_id --source-image=sour
 gcloud compute images list
 gcloud compute images list --project=project_id --format='value(name)'
 gcloud compute instances add-metadata instance_name --project=project_id --metadata=serial-port-enable=TRUE --zone=us-west1-a
-gcloud compute instances delete instance_name --project=project_id --zone="$(gcloud compute instances list --project=project_id --filter='name <= instance_name AND name >= instance_name' --format='value(zone.basename())')"
+gcloud compute instances delete instance_name --project=project_id --zone="${ gcloud compute instances list --project=project_id --filter='name <= instance_name AND name >= instance_name' --format='value(zone.basename())'; }"
 gcloud compute instances describe --project=project_id --zone=us-west1-a instance_name | yq '. | to_json' | json-recursive-decode | jq .
 gcloud compute instances get-serial-port-output instance_name --project=project_id --zone=us-west1-a --port=1
 gcloud compute instances list --filter='name~^instance_name_' --format='table(name, networkInterfaces[0].networkIP)'
@@ -489,20 +489,20 @@ gcloud storage objects update gs://bucket-name/path/to/filename --content-dispos
 gcloud storage objects update gs://bucket-name/path/to/filename --content-type=text/plain
 gcloud topic filters
 gdb elfname
-getcap "$(command -v nmap)"
-getfacl "$(command -v nmap)"
-getfattr "$(command -v nmap)"
+getcap "${ command -v nmap; }"
+getfacl "${ command -v nmap; }"
+getfattr "${ command -v nmap; }"
 gh auth login --git-protocol=https --hostname=github.example.org --web
 gh config list
 gh config set git_protocol ssh
 gh issue list
 gh pr list
 gh pr status
-git -C "$(git rev-parse --show-toplevel)" clean -ffdx && git submodule foreach git clean -ffdx
-git -C "$(git rev-parse --show-toplevel)" diff HEAD~1 ':^*.asc'
-git -C "$(git rev-parse --show-toplevel)" log --patch ':^*.asc'
-git -C "$(git rev-parse --show-toplevel)" log origin/main..branch_name --format=%H -- '*search_term*' | tac | xargs --max-args=1 -- git cherry-pick --
-git -C "$(git rev-parse --show-toplevel)" show --patch ':^*.asc'
+git -C "${ git rev-parse --show-toplevel; }" clean -ffdx && git submodule foreach git clean -ffdx
+git -C "${ git rev-parse --show-toplevel; }" diff HEAD~1 ':^*.asc'
+git -C "${ git rev-parse --show-toplevel; }" log --patch ':^*.asc'
+git -C "${ git rev-parse --show-toplevel; }" log origin/main..branch_name --format=%H -- '*search_term*' | tac | xargs --max-args=1 -- git cherry-pick --
+git -C "${ git rev-parse --show-toplevel; }" show --patch ':^*.asc'
 git add --patch
 git branch --format='%(refname:short)' | while read -r branch; do git checkout "$branch" || break; git rebase origin/main || break; done
 git branch -r | grep -E '^\s+origin/' | grep -v HEAD | cut -d/ -f2 | xargs git push ankitpati -d
@@ -537,7 +537,7 @@ git merge --ff-only branchname
 git merge-base HEAD branchname
 git p4 clone //depot/directory@all --verbose
 git push ssh://github.com/ankitpati/rpg.git local_branch_name:master
-git remote -v | sed --regexp-extended 's/ \((fetch|push)\)$//' | sort -u | while read -r remote_name remote_url; do remote_url="$(sed 's,^ssh://git@,ssh://,' <<<"$remote_url")"; git remote set-url "$remote_name" "$remote_url"; done
+git remote -v | sed --regexp-extended 's/ \((fetch|push)\)$//' | sort -u | while read -r remote_name remote_url; do remote_url="${ sed 's,^ssh://git@,ssh://,' <<<"$remote_url"; }"; git remote set-url "$remote_name" "$remote_url"; done
 git remote add origin https://github.com/ankitpati/rpg.git
 git restore filename
 git show --format= --name-only
@@ -587,10 +587,10 @@ gradle
 gradle --stop
 grep '\bcertificate-authority-data\b' kubeconfig.yaml | cut -d: -f2 | cut -d' ' -f2 | while read -r certbase64; do base64 -d <<<"$certbase64" | openssl x509 -text -noout; done
 grep '^p4 sync ' ~/.bash_history | cut -d' ' -f3- | sort -u | while read -r p4dir; do p4 sync "$p4dir"; done
-grep --extended-regexp --line-regexp "$(paste --serial --delimiters='|' <<<"$(command -v bash cut dos2unix grep jq sed tail watch | rev | cut --delimiter=/ --fields=2- | rev | sort --unique)")" <<<"${PATH//:/$'\n'}" | sed 's,^/usr/local/,$(brew --prefix)/,' | paste --serial --delimiters=:
-grep --extended-regexp --line-regexp "$(paste --serial --delimiters='|' <<<"$(command -v grep cut sed watch tail bash dos2unix jq | rev | cut --delimiter='/' --fields=2- | rev | sort --unique)")" <<<"${PATH//:/$'\n'}" | sed 's,^/usr/local/,$(brew --prefix)/,' | paste --serial --delimiters=':'
-grep -E "^($(tail --lines=+2 brew-deps.csv | cut -d, -f1 | comm -23 - brew-install-list.txt | paste -sd'|'))" brew-deps.csv | grep -v ,
-grep -E '^\s+keg_only' -r "$(brew --repo)/Library/Taps/homebrew/homebrew-core/Formula/"
+grep --extended-regexp --line-regexp "${ paste --serial --delimiters='|' <<<"${ command -v bash cut dos2unix grep jq sed tail watch | rev | cut --delimiter=/ --fields=2- | rev | sort --unique; }"; }" <<<"${PATH//:/$'\n'}" | sed 's,^/usr/local/,${ brew --prefix; }/,' | paste --serial --delimiters=:
+grep --extended-regexp --line-regexp "${ paste --serial --delimiters='|' <<<"${ command -v grep cut sed watch tail bash dos2unix jq | rev | cut --delimiter='/' --fields=2- | rev | sort --unique; }"; }" <<<"${PATH//:/$'\n'}" | sed 's,^/usr/local/,${ brew --prefix; }/,' | paste --serial --delimiters=':'
+grep -E "^(${ tail --lines=+2 brew-deps.csv | cut -d, -f1 | comm -23 - brew-install-list.txt | paste -sd'|'; })" brew-deps.csv | grep -v ,
+grep -E '^\s+keg_only' -r "${ brew --repo; }/Library/Taps/homebrew/homebrew-core/Formula/"
 grep -Elr -- '^(<<<<<<< HEAD|=======|>>>>>>> [[:xdigit:]]+ .*)$' | sort -u | xargs --open-tty vim
 grep -l search-string -r . | xargs --open-tty vim
 gron --ungron filename.gron > filename.json
@@ -665,7 +665,7 @@ istioctl proxy-status
 istioctl proxy-status --revision=1-16-0
 istioctl proxy-status --revision=1-16-0 | tail --lines=+2 | cut --delimiter=' ' -f1 | cut --delimiter='.' --fields=1,2 --output-delimiter=' ' | while read -r pod namespace; do kubectl delete pod "$pod" --namespace="$namespace"; done
 istioctl proxy-status --revision=default
-istioctl proxy-status | grep "$(kubectl get pods --namespace=istio-system --selector=app=istio-ingressgateway --output=jsonpath='{.items..metadata.name}')"
+istioctl proxy-status | grep "${ kubectl get pods --namespace=istio-system --selector=app=istio-ingressgateway --output=jsonpath='{.items..metadata.name}'; }"
 istioctl tag list
 istioctl tag set default --revision=1-16-0
 istioctl uninstall --purge
@@ -702,7 +702,7 @@ join -t '' filename1 filename2
 join filename1 filename2
 journalctl
 journalctl --rotate --vacuum-time 1s
-journalctl -f -o cat "$(command -v gnome-shell)"
+journalctl -f -o cat "${ command -v gnome-shell; }"
 jps
 jq '.["dashed-key-name"] | to_entries | [.[] | select(.value."inner-dashed-key-name" == "bar")] | from_entries' <<<'{"dashed-key-name":{"12345":{"inner-dashed-key-name":"foo"},"12346":{"inner-dashed-key-name":"bar"},"12347":{"inner-dashed-key-name":"baz"}}}'
 jq '.extensions | fromjson' filename.code-profile
@@ -808,14 +808,14 @@ kubectl get pods --all-namespaces
 kubectl get pods --all-namespaces --output=json | jq --raw-output '.items[] | (.metadata.name + "," + .metadata.namespace + "," + .spec.nodeName)'
 kubectl get pods --all-namespaces --selector='app in (istiod, istio-ingressgateway)' --output=json | jq --raw-output '.items[].spec.nodeName' | sort --unique | while read -r node_name; do printf '%s,' "$node_name"; kubectl get "node/$node_name" --output=json | jq --raw-output '[.status.nodeInfo.kubeProxyVersion, .status.nodeInfo.kubeletVersion] | join(",")'; done
 kubectl get pods --context=kube-context
-kubectl get pods --field-selector=status.phase=Failed --output=json | jq --raw-output '.items[] | select(.status.reason == "Evicted") | select(.status.startTime < "'"$(date --date='2 days ago' --utc +%Y-%m-%dT%H:%M:%SZ)"'")'
+kubectl get pods --field-selector=status.phase=Failed --output=json | jq --raw-output '.items[] | select(.status.reason == "Evicted") | select(.status.startTime < "'"${ date --date='2 days ago' --utc +%Y-%m-%dT%H:%M:%SZ; }"'")'
 kubectl get pods --kubeconfig=filename.yaml
 kubectl get pods --namespace=istio-system --selector=app=istio-ingressgateway --output=json | jq --raw-output '.items[].status.podIP'
 kubectl get pods --namespace=istio-system --selector=app=istio-ingressgateway --output=jsonpath='{.items..metadata.name}' | sed --regexp-extended 's/ |$/\n/g'
 kubectl get pods --namespace=istio-system --selector=app=istiod
 kubectl get pods --output=custom-columns=pods:.metadata.name | grep deployment_name | sort --version-sort | while read -r pod; do kubectl top pod/"$pod" --no-headers; done
 kubectl get pods --output=json | jq --raw-output '[.items[].spec.containers[].image] | unique[]'
-kubectl get pods --selector="$(kubectl get service/service_name --output=yaml | yq .spec.selector | sed 's/: /=/')"
+kubectl get pods --selector="${ kubectl get service/service_name --output=yaml | yq .spec.selector | sed 's/: /=/'; }"
 kubectl get pods --selector=app.kubernetes.io/component=buildfarm-server --output=NAME | ( timestamp=${ printf '%(%s)T' -1; }; while read -r pod; do kubectl exec "$pod" -- sh -c '/jdk/bin/jstack -e -l `pgrep --oldest java`' > "$timestamp-${pod#*/}.jstack" & done; wait )
 kubectl get pods --selector=app.kubernetes.io/name=app_name --output=json | jq --raw-output '.items[].spec.nodeName' | sort --unique | while read -r node_name; do printf '%s,' "$node_name"; kubectl get "node/$node_name" --output=json | jq --raw-output '[.status.nodeInfo.kubeProxyVersion, .status.nodeInfo.kubeletVersion] | join(",")'; done
 kubectl get pods --selector=app=app_name
@@ -865,7 +865,7 @@ limitcpu
 litecli ~/Library/Containers/org.p0deje.Maccy/Data/Library/Application\ Support/Maccy/Storage.sqlite
 ln -s /usr/bin/{ar,ranlib} ~/bin/ && pyenv install 2.7.18; rm ~/bin/{ar,ranlib}
 ln -sf /usr/lib/systemd/resolv.conf /etc/resolv.conf
-ln -sfn "$(brew --prefix)/opt/openjdk/libexec/openjdk.jdk" /Library/Java/JavaVirtualMachines/openjdk.jdk
+ln -sfn "${ brew --prefix; }/opt/openjdk/libexec/openjdk.jdk" /Library/Java/JavaVirtualMachines/openjdk.jdk
 locate --statistics
 loginctl list-sessions
 loginctl show-session
@@ -882,7 +882,7 @@ lpass ls
 lpass show --field='Public Key' unique_name
 lpass show --sync=now --all unique_name
 lpass show unique_name
-ls "$(brew --prefix)/bin/g"* | rev | cut -d/ -f1 | rev | cut -dg -f2- | xargs --no-run-if-empty command -v 2>/dev/null | grep -v "^$(brew --prefix)/" | rev | cut -d/ -f1 | rev | while read -r binary; do printf '%s/bin/g%s\n' "$(brew --prefix)" "$binary"; done | xargs --no-run-if-empty ls -l | rev | cut -d/ -f4 | rev | sort -u
+ls "${ brew --prefix; }/bin/g"* | rev | cut -d/ -f1 | rev | cut -dg -f2- | xargs --no-run-if-empty command -v 2>/dev/null | grep -v "^${ brew --prefix; }/" | rev | cut -d/ -f1 | rev | while read -r binary; do printf '%s/bin/g%s\n' "${ brew --prefix; }" "$binary"; done | xargs --no-run-if-empty ls -l | rev | cut -d/ -f4 | rev | sort -u
 ls *.json | while read -r jsonfile; do jq --sort-keys --indent 4 . < "$jsonfile" | sponge "$jsonfile"; done
 ls /Library/Launch{Agents,Daemons}
 ls ~/Library/Application\ Support/Code/User/settings.json
@@ -921,8 +921,8 @@ meson x --buildtype release --strip -Db_lto=true
 microk8s kubectl get all --all-namespaces
 microk8s status --wait-ready
 minikube config set driver docker
-minikube config set kubernetes-version "$(brew livecheck --json kubernetes-cli | jq --raw-output '.[0].version.latest')"
-minikube config set kubernetes-version "$(git ls-remote --sort=v:refname --tags https://github.com/kubernetes/kubernetes.git 'v*^{}' | cut -dv -f2 | cut -d^ -f1 | grep -P '^\d+\.\d+\.\d+$' | tail --lines=1)"
+minikube config set kubernetes-version "${ brew livecheck --json kubernetes-cli | jq --raw-output '.[0].version.latest'; }"
+minikube config set kubernetes-version "${ git ls-remote --sort=v:refname --tags https://github.com/kubernetes/kubernetes.git 'v*^{}' | cut -dv -f2 | cut -d^ -f1 | grep -P '^\d+\.\d+\.\d+$' | tail --lines=1; }"
 minikube config view
 minikube delete
 minikube start
@@ -945,7 +945,7 @@ mvn -U dependency:tree
 mvn exec:java -Dexec.mainClass=in.ankitpati.ClassName
 mvn help:effective-pom
 mypy --config-file ~/.mypy.ini
-namei -l "$(command -v perl6)"
+namei -l "${ command -v perl6; }"
 namei -om /bin/perl6
 nc -lp 5432
 nc -zvv ankitpati.in 443
@@ -985,12 +985,12 @@ objdump -d elf-binary-filename
 objdump -g elf-binary-filename
 objdump -r elf-binary-filename
 ocrmypdf filename.pdf filename-ocr.pdf
-op read op://Private/docker_personal_access_token/password | crane auth login docker.io -u "$(op read op://Private/docker_personal_access_token/username)" --password-stdin
-op read op://Private/docker_personal_access_token/password | docker login -u "$(op read op://Private/docker_personal_access_token/username)" --password-stdin
-op read op://Private/docker_personal_access_token/password | skopeo login docker.io --tls-verify -u "$(op read op://Private/docker_personal_access_token/username)" --password-stdin
+op read op://Private/docker_personal_access_token/password | crane auth login docker.io -u "${ op read op://Private/docker_personal_access_token/username; }" --password-stdin
+op read op://Private/docker_personal_access_token/password | docker login -u "${ op read op://Private/docker_personal_access_token/username; }" --password-stdin
+op read op://Private/docker_personal_access_token/password | skopeo login docker.io --tls-verify -u "${ op read op://Private/docker_personal_access_token/username; }" --password-stdin
 op read op://Private/note_name/notesPlain
 op read op://Private/perforce/password | p4 login -a
-op read op://Private/quay_encrypted_cli_password/password | skopeo login quay.io --tls-verify -u "$(op read op://Private/quay_encrypted_cli_password/username)" --password-stdin
+op read op://Private/quay_encrypted_cli_password/password | skopeo login quay.io --tls-verify -u "${ op read op://Private/quay_encrypted_cli_password/username; }" --password-stdin
 op read op://Private/unique_name/password
 op read op://Private/unique_name/username
 op vault list
@@ -1101,7 +1101,7 @@ p4 monitor show | grep -v ' monitor $' | grep -F " $USER " | sed 's/^ \+//' | cu
 p4 monitor terminate 12345
 p4 move -n directory/filename.old directory/filename.new
 p4 opened
-p4 passwd -O "$(op read op://Private/perforce/password)" -P "$(pwgen 20 1 | tee new_p4_pass)" && op item edit perforce password="$(< new_p4_pass)" >/dev/null && rm new_p4_pass
+p4 passwd -O "${ op read op://Private/perforce/password; }" -P "${ pwgen 20 1 | tee new_p4_pass; }" && op item edit perforce password="$(< new_p4_pass)" >/dev/null && rm new_p4_pass
 p4 reconcile //depot/...
 p4 reopen -c 12345 directory/filename1 directory/filename2 directory/filename3
 p4 resolve //depot/directory/...
@@ -1169,7 +1169,7 @@ perl -MModule::CoreList -E 'say Module::CoreList->first_release(q{File::Path})'
 perl -MModule::CoreList -E 'say foreach Module::CoreList->find_modules'
 perl -MModule::CoreList -E 'say foreach Module::CoreList->find_modules(qr/path/i)'
 perl -dE 0
-perl -pi -E "s[{redacted}][$(mvn --encrypt-master-password "$(openssl rand -base64 32)")]" ~/.m2/settings-security.xml
+perl -pi -E "s[{redacted}][${ mvn --encrypt-master-password "${ openssl rand -base64 32; }"; }]" ~/.m2/settings-security.xml
 perl -pi -E 'chomp if eof' filename.txt
 perl -pi -E 's/(?<=^|,)(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})(?=[, ])/\1-\2-\3-\4.nip.io/g' ~/.ssh/known_hosts
 perlbrew list-modules
@@ -1236,7 +1236,7 @@ podman inspect image_name | jq .
 podman list
 podman ps
 podman ps --no-trunc --all
-podman pull "kindest/node:$(skopeo list-tags docker://kindest/node | jq --raw-output '.Tags[]' | sort --version-sort | tail --lines=1)"
+podman pull "kindest/node:${ skopeo list-tags docker://kindest/node | jq --raw-output '.Tags[]' | sort --version-sort | tail --lines=1; }"
 podman pull fedora
 podman pull fedora-toolbox
 podman pull registry.fedoraproject.org/f34
@@ -1342,10 +1342,10 @@ rg -F -- '$_ =~ '
 rg -L search-string
 rg -l search-string
 rg -uuu search-string
-rich --print "$(lorem --randomize --lines=10)" --center --text-full --width=40
+rich --print "${ lorem --randomize --lines=10; }" --center --text-full --width=40
 rlwrap raku
 rlwrap sqlplus user/pass@orclalias
-rm "$(brew --prefix)/opt/openssl"; ln -s "$(brew --prefix)/opt/openssl@1.1/" "$(brew --prefix)/opt/openssl"
+rm "${ brew --prefix; }/opt/openssl"; ln -s "${ brew --prefix; }/opt/openssl@1.1/" "${ brew --prefix; }/opt/openssl"
 rm -rf /Users/Shared/*Relocated\ Items*/
 rm -rf ~/.local/share/containers/ # podman and buildah
 rpg 100 | sed --regexp-extended 's/[^A-Za-z0-9!@#$%^*_=+;:]/=/g'
@@ -1409,7 +1409,7 @@ snap start snapd-desktop-integration
 snap stop snapd-desktop-integration
 snap warnings
 snyk auth
-snyk auth "$(op read op://Private/snyk_auth_token/password)"
+snyk auth "${ op read op://Private/snyk_auth_token/password; }"
 snyk monitor
 softwareupdate --verbose --agree-to-license --install --all --restart
 source ./.venv/bin/activate
@@ -1598,7 +1598,7 @@ virsh qemu-monitor-command info
 virsh qemu-monitor-command info version
 virsh send-key Windows-10 --codeset xt 37
 virsh send-key dom --codeset xt 37
-virtualenv --python "$(command -v python2)" --clear ~/.venv/python2-app/
+virtualenv --python "${ command -v python2; }" --clear ~/.venv/python2-app/
 vkcube
 vmrun getGuestIPAddress ~/Virtual\ Machines.localized/vm_name.vmwarevm/vm_name.vmx
 vmrun list
