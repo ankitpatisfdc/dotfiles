@@ -16,7 +16,7 @@ src="$mydir/../src"
 cd "$src"
 
 username=$USER
-displayname=${DISPLAYNAME:-$(finger "$USER" | grep --only-matching --perl-regexp '(?<=Name: ).*$')}
+displayname=${DISPLAYNAME:-${ finger "$USER" | grep --only-matching --perl-regexp '(?<=Name: ).*$'; }}
 
 declare -a grep_command=(
     grep
