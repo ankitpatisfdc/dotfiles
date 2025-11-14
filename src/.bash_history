@@ -297,7 +297,7 @@ docker run --interactive --pid=host --privileged --pull=always --rm --tty busybo
 docker scan --accept-license --version
 docker scan --login --token="${ op read op://Private/snyk_auth_token/password; }"
 docker scan image_name
-docker tag image:tag "image:${ printf '%(%s)T' -1; }-${ git rev-parse --short HEAD; }"
+docker tag image:tag "image:$EPOCHSECONDS-${ git rev-parse --short HEAD; }"
 docker-compose build
 docker-compose stop
 docker-compose up
@@ -816,7 +816,7 @@ kubectl get pods --namespace=istio-system --selector=app=istiod
 kubectl get pods --output=custom-columns=pods:.metadata.name | grep deployment_name | sort --version-sort | while read -r pod; do kubectl top pod/"$pod" --no-headers; done
 kubectl get pods --output=json | jq --raw-output '[.items[].spec.containers[].image] | unique[]'
 kubectl get pods --selector="${ kubectl get service/service_name --output=yaml | yq .spec.selector | sed 's/: /=/'; }"
-kubectl get pods --selector=app.kubernetes.io/component=buildfarm-server --output=NAME | ( timestamp=${ printf '%(%s)T' -1; }; while read -r pod; do kubectl exec "$pod" -- sh -c '/jdk/bin/jstack -e -l `pgrep --oldest java`' > "$timestamp-${pod#*/}.jstack" & done; wait )
+kubectl get pods --selector=app.kubernetes.io/component=buildfarm-server --output=NAME | while read -r pod; do kubectl exec "$pod" -- sh -c '/jdk/bin/jstack -e -l `pgrep --oldest java`' > "$EPOCHSECONDS-${pod#*/}.jstack" & done; wait
 kubectl get pods --selector=app.kubernetes.io/name=app_name --output=json | jq --raw-output '.items[].spec.nodeName' | sort --unique | while read -r node_name; do printf '%s,' "$node_name"; kubectl get "node/$node_name" --output=json | jq --raw-output '[.status.nodeInfo.kubeProxyVersion, .status.nodeInfo.kubeletVersion] | join(",")'; done
 kubectl get pods --selector=app=app_name
 kubectl get pods --selector=app=app_name --output=name | while read -r pod_name; do kubectl logs "$pod_name" --container=container_name --follow & done; wait
