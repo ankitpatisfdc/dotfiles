@@ -538,6 +538,7 @@ git merge --ff-only branchname
 git merge-base HEAD branchname
 git p4 clone //depot/directory@all --verbose
 git push ssh://github.com/ankitpati/rpg.git local_branch_name:master
+git rebase --force-rebase HEAD~1
 git remote --verbose | sed --regexp-extended 's/ \((fetch|push)\)$//' | sort --unique | while read -r remote_name remote_url; do git remote set-url "$remote_name" "ssh://${remote_url#ssh://git@}"; done
 git remote add origin https://github.com/ankitpati/rpg.git
 git restore filename
