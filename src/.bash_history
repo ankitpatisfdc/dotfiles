@@ -1,14 +1,14 @@
 #!/usr/bin/env bash
-( CHANGELIST=12345; p4 describe "$CHANGELIST" | grep -v ' delete$' | sed '0,/^Affected files /d' | tail --lines=+2 | head --lines=-1 | cut --delimiter='#' --fields=1 | cut --delimiter='/' --fields=6- | tar --append --file="p4-cl-$CHANGELIST.tar" --verbatim-files-from --files-from=- )
-( GH_ORIGIN='origin'; PULL_REQUEST_ID='12345'; BRANCH_NAME='foo-bar'; git fetch "$GH_ORIGIN" "pull/$PULL_REQUEST_ID/head:$BRANCH_NAME" && git checkout "$BRANCH_NAME" )
-( GH_ORIGIN='origin'; PULL_REQUEST_ID='12345'; git fetch "$GH_ORIGIN" "pull/$PULL_REQUEST_ID/head" )
-( GH_ORIGIN='origin'; PULL_REQUEST_ID='12345'; git pull "$GH_ORIGIN" "pull/$PULL_REQUEST_ID/head" )
-( GH_USERNAME='ankitpati'; age -r "${ curl --header "Authorization: token ${ op read op://Private/github_personal_access_token/password; }" "https://github.example.org/api/v3/users/$GH_USERNAME/keys" | jq --raw-output .[0].key; }" --output cipher.txt.age plain.txt )
-( GH_USERNAME='ankitpati'; curl --silent "https://api.github.com/users/$GH_USERNAME/repos?per_page=${ curl --silent "https://api.github.com/users/$GH_USERNAME" | jq --raw-output .public_repos; }" ) | jq --raw-output0 '.[].html_url + ".git"' | xargs --no-run-if-empty --null --max-args 1 git clone --recurse-submodules
+( CHANGELIST=12345; p4 describe "$CHANGELIST" | grep -v ' delete$' | sed '0,/^Affected files /d' | tail --lines=+2 | head --lines=-1 | cut --delimiter='#' --fields=1 | cut --delimiter=/ --fields=6- | tar --append --file="p4-cl-$CHANGELIST.tar" --verbatim-files-from --files-from=- )
+( GH_ORIGIN=origin; PULL_REQUEST_ID=12345; BRANCH_NAME=foo-bar; git fetch "$GH_ORIGIN" "pull/$PULL_REQUEST_ID/head:$BRANCH_NAME" && git checkout "$BRANCH_NAME" )
+( GH_ORIGIN=origin; PULL_REQUEST_ID=12345; git fetch "$GH_ORIGIN" "pull/$PULL_REQUEST_ID/head" )
+( GH_ORIGIN=origin; PULL_REQUEST_ID=12345; git pull "$GH_ORIGIN" "pull/$PULL_REQUEST_ID/head" )
+( GH_USERNAME=ankitpati; age -r "${ curl --header "Authorization: token ${ op read op://Private/github_personal_access_token/password; }" "https://github.example.org/api/v3/users/$GH_USERNAME/keys" | jq --raw-output .[0].key; }" --output cipher.txt.age plain.txt )
+( GH_USERNAME=ankitpati; curl --silent "https://api.github.com/users/$GH_USERNAME/repos?per_page=${ curl --silent "https://api.github.com/users/$GH_USERNAME" | jq --raw-output .public_repos; }" ) | jq --raw-output0 '.[].html_url + ".git"' | xargs --no-run-if-empty --null --max-args 1 git clone --recurse-submodules
 ( filename=depot/directory/filename; p4 sync "$filename#$(( "${ p4 have "$filename" | cut -d# -f2 | cut -d' ' -f1; }" - 1 ))" )
 ( find . -type f -iname '*.py' ; grep --ignore-case --files-with-matches --extended-regexp '/(env )?python' --recursive . 2>/dev/null ) | sort --unique | xargs --open-tty vim
-( hostname='google.com'; openssl s_client -auth_level 2 -connect "$hostname":443 -servername "$hostname" -verify_hostname "$hostname" -verify_return_error )
-( hostname='google.com'; openssl s_client -tls1_3 -auth_level 2 -connect "$hostname":443 -servername "$hostname" -verify_hostname "$hostname" -verify_return_error )
+( hostname=example.org; openssl s_client -auth_level 2 -connect "$hostname":443 -servername "$hostname" -verify_hostname "$hostname" -verify_return_error )
+( hostname=example.org; openssl s_client -tls1_3 -auth_level 2 -connect "$hostname":443 -servername "$hostname" -verify_hostname "$hostname" -verify_return_error )
 ( perforce_dir=//depot/directory; p4 dirs "$perforce_dir/*" | while read -r perforce_subdir; do p4 grep -e 'search-expression' "$perforce_subdir/..."; done )
 ( perforce_dir=//depot/directory; p4 dirs "$perforce_dir/*"; p4 sizes -sh "$perforce_dir/..." )
 ( ssh_private_key_file=id_ed25519; ssh-keygen -l -v -f "$ssh_private_key_file" && ssh-keygen -y -f "$ssh_private_key_file" && cat "$ssh_private_key_file" )
@@ -27,29 +27,29 @@
 /usr/libexec/java_home --verbose
 /usr/libexec/java_home --version=1.8
 CLASSPATH=. java ClassName
-GIT_COMMITTER_NAME='Ankit Pati' GIT_COMMITTER_EMAIL='contact@ankitpati.in' git rebase branchname --exec 'git commit --amend --author="Ankit Pati <contact@ankitpati.in>" --no-edit --no-gpg-sign'
-HTTPS_PROXY="${ jq --raw-output '.proxies."https-proxy"' < ~/.docker/daemon.json; }" NO_PROXY="${ jq --raw-output '.proxies."no-proxy"' < ~/.docker/daemon.json; }" skopeo sync --dry-run --override-arch amd64 --override-os linux --src docker --dest docker docker.io/library/busybox gcr.io/project_id/namespace/
-HTTPS_PROXY="${ jq --raw-output '.proxies."https-proxy"' < ~/.docker/daemon.json; }" NO_PROXY="${ jq --raw-output '.proxies."no-proxy"' < ~/.docker/daemon.json; }" skopeo sync --dry-run --override-arch amd64 --override-os linux --src docker --dest docker docker.io/library/busybox:latest gcr.io/project_id/namespace/
+GIT_COMMITTER_NAME='Ankit Pati' GIT_COMMITTER_EMAIL=contact@ankitpati.in git rebase branchname --exec 'git commit --amend --author="Ankit Pati <contact@ankitpati.in>" --no-edit --no-gpg-sign'
+HTTPS_PROXY=${ jq --raw-output '.proxies."https-proxy"' < ~/.docker/daemon.json; } NO_PROXY=${ jq --raw-output '.proxies."no-proxy"' < ~/.docker/daemon.json; } skopeo sync --dry-run --override-arch amd64 --override-os linux --src docker --dest docker docker.io/library/busybox gcr.io/project_id/namespace/
+HTTPS_PROXY=${ jq --raw-output '.proxies."https-proxy"' < ~/.docker/daemon.json; } NO_PROXY=${ jq --raw-output '.proxies."no-proxy"' < ~/.docker/daemon.json; } skopeo sync --dry-run --override-arch amd64 --override-os linux --src docker --dest docker docker.io/library/busybox:latest gcr.io/project_id/namespace/
 KUBECONFIG="$PWD/kubeconfig.yaml:$HOME/.kube/config" kubectl config view --merge --flatten | sponge ~/.kube/config
-LESS='-I' git log --graph --pretty=fuller --show-signature
+LESS=-I git log --graph --pretty=fuller --show-signature
 P4DIFF=vimdiff p4 diff -Od -f //depot/directory/...
 P4DIFF=vimdiff p4 diff -f //depot/directory/...
 P4DIFF=vimdiff p4 diff -f //depot/directory/filename
-PATH="${ grep --invert-match binutils <<<"${PATH//:/$'\n'}" | paste --delimiters=':' --serial; }" cpan Unicode::GCString
-PATH=${ grep --extended-regexp --invert-match 'binutils|libtool' <<<"${PATH//:/$'\n'}" | paste --delimiters=':' --serial; } bazel build //...
-PATH=${ grep --invert-match homebrew <<<"${PATH//:/$'\n'}" | paste --delimiters=':' --serial; } "${ command -v bazel; }" build //...
+PATH=${ grep --extended-regexp --invert-match 'binutils|libtool' <<<"${PATH//:/$'\n'}" | paste --delimiters=: --serial; } bazel build //...
+PATH=${ grep --invert-match binutils <<<"${PATH//:/$'\n'}" | paste --delimiters=: --serial; } cpan Unicode::GCString
+PATH=${ grep --invert-match homebrew <<<"${PATH//:/$'\n'}" | paste --delimiters=: --serial; } "${ command -v bazel; }" build //...
 SOFT_SERVE_INITIAL_ADMIN_KEYS=$(< ~/.ssh/id_ed25519.pub) soft serve
 TFENV_TERRAFORM_VERSION=0.11.15 terraform init -upgrade
 TF_LOG=debug terraform plan -out tfplan
 TZ='' date
 TZ=-5:30 date
 TZ=Asia/Kolkata date
-TZ=UTC0 git log --date='format-local:%Y-%m-%dT%H:%M:%SZ'
+TZ=UTC0 git log --date=format-local:%Y-%m-%dT%H:%M:%SZ
 Xvfb :99 -screen 0 1024x768x24
-\ssh ssh.ankitpati.in
+\ssh ssh.example.org
 aa-status
 ack '(?<=^B: ).*$'
-adb logcat --pid="${ adb shell pidof -s in.ankitpati.gparse | cut -d' ' -f1; }"
+adb logcat --pid="${ adb shell pidof -s org.example.app | cut --delimiter=' ' --fields=1; }"
 adb logcat -c && adb logcat > current.log
 adb shell pm grant com.oasisfeng.island android.permission.GET_APP_OPS_STATS
 adb shell pm list packages
@@ -83,7 +83,7 @@ argo submit --dry-run --from=CronWorkflow/cron-job-workflow_name --output=yaml
 argo submit --log --from=CronWorkflow/cron-job-workflow_name
 argo submit --output=yaml --from=CronWorkflow/cron-job-workflow_name
 argo submit --watch --from=CronWorkflow/cron-job-workflow_name
-aria2c -c -x 16 https://ankitpati.in/filename.br
+aria2c -c -x 16 https://example.org/filename.br
 arkade get --format=markdown
 arkade get krew
 arkade info inlets-operator
@@ -172,7 +172,7 @@ code tunnel --accept-server-license-terms
 comm -23 <(grep -P '^brew install (?!--cask )' ~/Code/Dotfiles/src/.bash_history | cut -d' ' -f3) <(brew leaves --installed-on-request)
 command -V command
 command -v gnome-shell
-command ssh ssh.ankitpati.in
+command ssh ssh.example.org
 copyq info
 cpan-outdated -p | xargs cpanm; echo $?; pip list --outdated --format=freeze | cut -d= -f1 | grep -Ev '^(GDAL|python-poppler-qt5|slip|wxPython)$' | xargs pip install --user -U; echo $?; mypy --install-types; echo $?; cargo install-update -a; echo $?; npm update -g; echo $?; sdk selfupdate; echo $?; sdk update; echo $?; for java_sdk in ${ grep '^sdk install ' ~/.bash_history | cut -d' ' -f3 | sort -u; }; do sdk upgrade "$java_sdk"; done; find ~/.sdkman/ -type f \( -name '*.exe' -o -name '*.bat' \) -delete; vim +PlugUpgrade +PlugUpdate +qa; nvim +PlugUpgrade +PlugUpdate +qa; for codext in ${ code --list-extensions; }; do code --install-extension "$codext" --force; done; echo $?; flutter upgrade; echo $?; flutter doctor -v; echo $?; gcloud components update; echo $?; steampipe plugin update --all; echo $?; tldr --update; echo $?
 cpdf -draft -squeeze filename.pdf -o filename-draft-squeeze.pdf
@@ -204,8 +204,8 @@ curl --header 'Accept: application/json, */*' --output /dev/null --silent --writ
 curl --header 'Authorization: Bearer QQ==' --output blob 'https://ghcr.io/v2/path/to/project/blobs/sha256:0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef'
 curl --key openssl.key --cert openssl.crt https://mtls.example.org
 curl --netrc https://github.example.org/api/v3/user
-curl --proxytunnel --proxy https://squid.ankitpati.in:1080 https://ankitpati.in
-curl --remote-name https://ankitpati.in/download?file=filename.c
+curl --proxytunnel --proxy https://squid.example.org:1080 https://example.org
+curl --remote-name https://example.org/download?file=filename.c
 curl --resolve example.org:80:127.0.0.1 http://example.org
 curl --silent --header "Authorization: Bearer ${ gcloud auth application-default print-access-token; }" 'https://www.googleapis.com/compute/v1/projects/project_id/zones/us-west1-a/instanceGroups/k8s-ig--0000000000000000' | jq .
 curl --silent --include https://example.org | head --lines=1 | cut -d' ' -f2
@@ -213,8 +213,8 @@ curl --silent https://www.toptal.com/developers/gitignore/api/list | tr , '\n'; 
 curl --verbose --location 'https://example.org/12345' 2>&1 | dos2unix | grep --only-matching --perl-regexp '(?<=^< location: ).*$' | grep --colour 12345
 curl --write-out '\n%{time_total} - %{time_starttransfer}\n' https://httpbin.org/get | tail --lines=1 | bc
 curl http://localhost:8001 | jq --raw-output '.["paths"][]' | while read -r k8s_api_endpoint; do printf '\n## `%s`\n\n```json\n%s\n```\n' "$k8s_api_endpoint" "${ curl "http://localhost:8001$k8s_api_endpoint"; }"; done > kubernetes_api_record.md
-curl https://ankitpati.in/gpg.asc --output /etc/apt/trusted.gpg.d/ankitpati.asc
-curl https://apt.ankitpati.in/ankitpati.list --output /etc/apt/sources.list.d/ankitpati.list
+curl https://apt.example.org/ankitpati.list --output /etc/apt/sources.list.d/ankitpati.list
+curl https://example.org/gpg.asc --output /etc/apt/trusted.gpg.d/ankitpati.asc
 curl https://github.com/web-flow.gpg | gpg --import
 curl https://gitlab.com/api/v4/users/ankitpati/projects | jq --raw-output --arg random_index $((RANDOM % 13)) '.[$random_index | tonumber]'
 curl https://ident.me; echo; exec cat
@@ -248,11 +248,11 @@ df -i
 diff -u5 -r directory1/ directory2/ | delta
 diff -x '*.asc' -x '*.lock.hcl' -x '*.tfstate' -x '.terraform' -x 'tfplan' -u5 -r terraform_directory1/ terraform_directory2/ | delta
 diff-pdf --grayscale --mark-differences --output-diff=diff.pdf --skip-identical --verbose filename1.pdf filename2.pdf
-dig -t ANY google.com
+dig -t ANY example.org
 dig -x 172.30.83.9
-dig -x ankitpati.in
-dig ankitpati.in
-dig ankitpati.in @1.1.1.1
+dig -x example.org
+dig example.org
+dig example.org @1.1.1.1
 dirs -c
 dirs -v
 django-admin startproject forum
@@ -272,13 +272,13 @@ dnf repoquery --unsatisfied
 dnf repoquery --userinstalled
 dnf system-upgrade download --refresh --releasever=36
 dnf system-upgrade reboot
-dnslookup ankitpati.in 1.1.1.1
-dnslookup ankitpati.in https://1.1.1.1/dns-query
-dnslookup ankitpati.in https://one.one.one.one/dns-query
-dnslookup ankitpati.in tls://1.1.1.1
-dnslookup ankitpati.in tls://one.one.one.one
-dnstracer -s . ankitpati.in
-dnstracer ankitpati.in
+dnslookup example.org 1.1.1.1
+dnslookup example.org https://1.1.1.1/dns-query
+dnslookup example.org https://one.one.one.one/dns-query
+dnslookup example.org tls://1.1.1.1
+dnslookup example.org tls://one.one.one.one
+dnstracer -s . example.org
+dnstracer example.org
 do-release-upgrade
 docker build --progress=plain --tag=image_name .
 docker buildx build --platform=linux/amd64,linux/arm64 --output=type=oci,dest=/path/to/filename.tar .
@@ -307,7 +307,7 @@ dockviz images -d | apdot | timg -
 dockviz images -d | patchwork | apdot | timg -
 dockviz images -t
 drill -x 1.1.1.1
-drill ankitpati.in
+drill example.org
 ecoji -e <<<'hello, world' | ecoji -d
 ember build
 ember build --environment=production
@@ -335,13 +335,13 @@ exec su - ankitpati
 exec sudo -i
 exec sudo -u ankitpati -i
 exiftool -p '$XResolution,$YResolution' filename.jpg
-export DISPLAY=':99.0'
-export GH_TOKEN="${ op read op://Private/github_personal_access_token/password; }"
-export GITHUB_PERSONAL_ACCESS_TOKEN="${ op read op://Private/github_personal_access_token/password; }"
-export JAVA_HOME="${ /usr/libexec/java_home --failfast --version=11; }"
-export KUBECONFIG='kubeconfig.yaml'
-export P4CLIENT="${ p4 clients -u "${ p4 client -o | grep '^Owner:' | cut -f2; }" | cut -d' ' -f1-5 | grep " /client/root\$" | cut -d' ' -f2; }"
-export SRC_ACCESS_TOKEN="${ op read op://Private/sourcegraph_access_token/password; }"
+export DISPLAY=:99.0
+export GH_TOKEN=${ op read op://Private/github_personal_access_token/password; }
+export GITHUB_PERSONAL_ACCESS_TOKEN=${ op read op://Private/github_personal_access_token/password; }
+export JAVA_HOME=${ /usr/libexec/java_home --failfast --version=11; }
+export KUBECONFIG=kubeconfig.yaml
+export P4CLIENT=${ p4 clients -u "${ p4 client -o | grep '^Owner:' | cut -f2; }" | cut -d' ' -f1-5 | grep " /client/root\$" | cut -d' ' -f2; }
+export SRC_ACCESS_TOKEN=${ op read op://Private/sourcegraph_access_token/password; }
 eza --all --classify --git --git-ignore --group-directories-first --header --icons --inode --long
 factor 1849
 fallocate -l 100M hundred-MiB-file
@@ -418,6 +418,7 @@ for i in {001..128}; do mv -- "certificate-$i.pdf" "${ pdftotext "certificate-$i
 foremost
 fpaste filename.txt
 free -h
+ftp --no-prompt --passive ankitpati@ftp.example.org 2121 # NOTE: remember to set `binary` on startup
 fuser -v 8080/tcp
 fzf
 gcc -march=native -Q --help=target | grep -E -- '-m(arch|tune)='
@@ -435,12 +436,12 @@ gcloud cloud-shell ssh
 gcloud components install gke-gcloud-auth-plugin
 gcloud components list
 gcloud components repositories list
-gcloud compute addresses list --project=project_id --filter='name:instance_name' --format='table(name,address)'
+gcloud compute addresses list --project=project_id --filter=name:instance_name --format='table(name,address)'
 gcloud compute backend-services list --filter=name="(${ gcloud compute forwarding-rules list --filter=IPAddress='(10.10.10.10)' --format=json'(name)' | jq --raw-output .[0].name; })" --format=json'(backends)' | jq '.[0].backends[]'
 gcloud compute connect-to-serial-port instance_name --project=project_id --zone=us-west1-a --port=1
 gcloud compute disks resize instance_name --project=project_id --zone=us-west1-a --size=25GB
 gcloud compute firewall-rules list --format=json --filter='allowed.ports[0] = ("1234") AND allowed.ports[1] = ("2345")' | jq .
-gcloud compute firewall-rules update rule_name --allow='tcp:53,tcp:80,tcp:443,udp:53'
+gcloud compute firewall-rules update rule_name --allow=tcp:53,tcp:80,tcp:443,udp:53
 gcloud compute images create image_name --project=project_id --source-image=source_image_name --source-image-project=source_project_id
 gcloud compute images list
 gcloud compute images list --project=project_id --format='value(name)'
@@ -479,7 +480,7 @@ gcloud container get-server-config --format='yaml(defaultClusterVersion)'
 gcloud functions delete function_name --project=project_id
 gcloud functions list
 gcloud info
-gcloud projects add-iam-policy-binding project_id --member=user:contact@ankitpati.in --role=roles/compute.instanceAdmin.v1
+gcloud projects add-iam-policy-binding project_id --member=user:mail@example.org --role=roles/compute.instanceAdmin.v1
 gcloud projects get-iam-policy project_id
 gcloud projects list
 gcloud recommender insights list --insight-type=google.container.DiagnosisInsight --location=us-west1 --project=project_id
@@ -528,7 +529,7 @@ git lfs install
 git log --follow -- filename
 git log --name-only --format= | uniq | less
 git log --patch
-git log --patch --author='contact@ankitpati.in'
+git log --patch --author=mail@example.org
 git log --patch -G search_term
 git log --pretty=email
 git log --pretty=format:%ae | sort -u | cut -d@ -f2- | sort -u
@@ -537,7 +538,7 @@ git merge --ff-only branchname
 git merge-base HEAD branchname
 git p4 clone //depot/directory@all --verbose
 git push ssh://github.com/ankitpati/rpg.git local_branch_name:master
-git remote -v | sed --regexp-extended 's/ \((fetch|push)\)$//' | sort -u | while read -r remote_name remote_url; do remote_url="${ sed 's,^ssh://git@,ssh://,' <<<"$remote_url"; }"; git remote set-url "$remote_name" "$remote_url"; done
+git remote --verbose | sed --regexp-extended 's/ \((fetch|push)\)$//' | sort --unique | while read -r remote_name remote_url; do git remote set-url "$remote_name" "ssh://${remote_url#ssh://git@}"; done
 git remote add origin https://github.com/ankitpati/rpg.git
 git restore filename
 git show --format= --name-only
@@ -561,24 +562,24 @@ go get github.com/ericchiang/pup
 go get png2svg
 go-avif
 google-java-format -i -a Filename.java
-gpg2 --armor --export contact@ankitpati.in | pbcopy
-gpg2 --armor --export contact@ankitpati.in | xclip
-gpg2 --armor --export-secret-keys contact@ankitpati.in > privkey.gpg.asc
+gpg2 --armor --export mail@example.org | pbcopy
+gpg2 --armor --export mail@example.org | xclip
+gpg2 --armor --export-secret-keys mail@example.org > privkey.gpg.asc
 gpg2 --decrypt data.gpg --output data
 gpg2 --decrypt data.gpg | brotli --decompress --output filename
 gpg2 --decrypt data.gpg | brotli --decompress | grep service
-gpg2 --edit-key contact@ankitpati.in
-gpg2 --encrypt --sign --recipient contact@ankitpati.in filename.br
+gpg2 --edit-key mail@example.org
+gpg2 --encrypt --sign --recipient mail@example.org filename.br
 gpg2 --export -a 'Ankit Pati' > pubkey.asc
-gpg2 --export-secret-keys contact@ankitpati.in > privkey.gpg
-gpg2 --fingerprint contact@ankitpati.in
+gpg2 --export-secret-keys mail@example.org > privkey.gpg
+gpg2 --fingerprint mail@example.org
 gpg2 --full-generate-key
 gpg2 --import filename.asc
-gpg2 --keyid-format long --list-keys contact@ankitpati.in
+gpg2 --keyid-format long --list-keys mail@example.org
 gpg2 --keyring ./filename.gpg --no-default-keyring --export -a > filename.asc
 gpg2 --list-keys --keyid-format long
 gpg2 --list-secret-keys
-gpg2 --locate-keys contact@ankitpati.in
+gpg2 --locate-keys mail@example.org
 gpg2 --recv-keys 'B8BB CEBC BD6C 4BF0 599C 40F9 360A 9642 9F7A 69DC'
 gpg2 --verify filename-CHECKSUM && sha256sum -c filename-CHECKSUM
 gpg2 --with-fingerprint filename.gpg
@@ -588,13 +589,16 @@ gradle --stop
 grep '\bcertificate-authority-data\b' kubeconfig.yaml | cut -d: -f2 | cut -d' ' -f2 | while read -r certbase64; do base64 -d <<<"$certbase64" | openssl x509 -text -noout; done
 grep '^p4 sync ' ~/.bash_history | cut -d' ' -f3- | sort -u | while read -r p4dir; do p4 sync "$p4dir"; done
 grep --extended-regexp --line-regexp "${ paste --serial --delimiters='|' <<<"${ command -v bash cut dos2unix grep jq sed tail watch | rev | cut --delimiter=/ --fields=2- | rev | sort --unique; }"; }" <<<"${PATH//:/$'\n'}" | sed 's,^/usr/local/,${ brew --prefix; }/,' | paste --serial --delimiters=:
-grep --extended-regexp --line-regexp "${ paste --serial --delimiters='|' <<<"${ command -v grep cut sed watch tail bash dos2unix jq | rev | cut --delimiter='/' --fields=2- | rev | sort --unique; }"; }" <<<"${PATH//:/$'\n'}" | sed 's,^/usr/local/,${ brew --prefix; }/,' | paste --serial --delimiters=':'
+grep --extended-regexp --line-regexp "${ paste --serial --delimiters='|' <<<"${ command -v grep cut sed watch tail bash dos2unix jq | rev | cut --delimiter=/ --fields=2- | rev | sort --unique; }"; }" <<<"${PATH//:/$'\n'}" | sed 's,^/usr/local/,${ brew --prefix; }/,' | paste --serial --delimiters=:
 grep -E "^(${ tail --lines=+2 brew-deps.csv | cut -d, -f1 | comm -23 - brew-install-list.txt | paste -sd'|'; })" brew-deps.csv | grep -v ,
 grep -E '^\s+keg_only' -r "${ brew --repo; }/Library/Taps/homebrew/homebrew-core/Formula/"
 grep -Elr -- '^(<<<<<<< HEAD|=======|>>>>>>> [[:xdigit:]]+ .*)$' | sort -u | xargs --open-tty vim
 grep -l search-string -r . | xargs --open-tty vim
 gron --ungron filename.gron > filename.json
 gron filename.json > filename.gron
+grpcurl -d '{}' grpc.example.org:443 grpc.health.v1.Health/Check
+grpcurl -plaintext grpc.example.org:8980 list
+grpcurl grpc.example.org:443 list
 gs -sDEVICE=pdfwrite -dCompatibilityLevel=1.7 -dPDFSETTINGS=/screen -dNOPAUSE -dQUIET -dBATCH -sOutputFile=filename-reduced.pdf filename.pdf
 gsettings set org.gnome.shell.app-switcher current-workspace-only true
 gsutil cat gs://bucket-name/path/to/filename # $bucket_name =~ /^[a-z](?:[-a-z0-9]{4,28}[a-z0-9])$/
@@ -606,6 +610,7 @@ gunzip filename.gz
 hash
 hash -r
 hash perl
+hcl2json filename.hcl | jq .
 hdparm --security-unlock SecretPassword /dev/sdb
 hdparm --user-master m --security-disable SecretPassword /dev/sdb
 hdparm --user-master m --security-unlock SecretPassword /dev/sdb
@@ -619,16 +624,21 @@ helm get values chart_name | yq .
 helm history chart_name
 helm list
 helm list | tail --lines=+2 | tr '\t' ' ' | tr --squeeze-repeats ' ' | sort --key=4,5 --numeric-sort
+helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
 helm rollback --dry-run chart_name
 helm rollback chart_name 12345
+helm search repo prometheus-community/prometheus-adapter --versions
 helm show all chart_name
+helm show values kube-prometheus-stack --repo=https://prometheus-community.github.io/helm-charts --version=79.5.0 | yq eval-all '[.] | to_json' | jq --raw-output '[.. | select(type == "object" and .registry? and .repository? and .tag?) | "\(.registry)/\(.repository):\(.tag)"] | map(sub(":$"; "")) | unique[]'
 helm status chart_name
 helm template chart_name chart/ --values=values.yaml --output-dir="$HOME/Code/chart_name/"
 helm template chart_name chart/ --values=values.yaml | yq .
+helm upgrade --create-namespace --install --namespace=monitoring --repo=https://prometheus-community.github.io/helm-charts --timeout=15m --values=etc/kube-prometheus-stack.yaml --set=prometheus.prometheusSpec.podMonitorSelectorNilUsesHelmValues=false,prometheus.prometheusSpec.serviceMonitorSelectorNilUsesHelmValues=false --wait kube-prometheus-stack kube-prometheus-stack
 help '{ ... }'
 hexdump -C filename.dat
 hexdump -C ~/Applications/Chrome\ Apps.localized/Icon$'\r'/..namedfork/rsrc
 hg clone https://foss.heptapod.net/pypy/pypy pypy
+highlight --out-format=rtf main.c | pbcopy
 hostname -I
 hostnamectl set-hostname boronHostname
 html-beautify -f filename.html
@@ -638,6 +648,7 @@ hunspell -l
 hwloc-ls
 i2cdetect -l
 iat disk-image.bin disk-image.iso
+iconv -c --from-code=UTF-8 --to-code=ASCII filename.txt | tr --complement --delete '[:print:]\n' | sponge filename.txt
 id -u
 identify -format '%x,%y\n' filename.png
 ideviceinfo
@@ -663,7 +674,7 @@ istioctl install --set=revision=release
 istioctl operator dump | yq .
 istioctl proxy-status
 istioctl proxy-status --revision=1-16-0
-istioctl proxy-status --revision=1-16-0 | tail --lines=+2 | cut --delimiter=' ' -f1 | cut --delimiter='.' --fields=1,2 --output-delimiter=' ' | while read -r pod namespace; do kubectl delete pod "$pod" --namespace="$namespace"; done
+istioctl proxy-status --revision=1-16-0 | tail --lines=+2 | cut --delimiter=' ' -f1 | cut --delimiter=. --fields=1,2 --output-delimiter=' ' | while read -r pod namespace; do kubectl delete pod "$pod" --namespace="$namespace"; done
 istioctl proxy-status --revision=default
 istioctl proxy-status | grep "${ kubectl get pods --namespace=istio-system --selector=app=istio-ingressgateway --output=jsonpath='{.items..metadata.name}'; }"
 istioctl tag list
@@ -690,6 +701,7 @@ jd --set 1.json 2.json
 jd --set <(jq .theme < .dark-reader.json) <(jq .customThemes[0].theme < .dark-reader.json)
 jd -f patch 1.json 2.json
 jd 1.json 2.json
+jdb -attach localhost:8000
 jfrog config show
 jfrog login
 jfrog rt curl /api/repositories | jq --raw-output '.[].key'
@@ -713,6 +725,7 @@ jq '.settings | fromjson.settings | fromjson' filename.code-profile
 jq --raw-input 'split(".") | .[0],.[1] | @base64d | fromjson' < JWT.asc
 jq --raw-input 'split(".") | .[0],.[1] | @base64d | fromjson' <(kubectl exec deployment/deployment_name --container=container_name -- cat /var/run/secrets/kubernetes.io/serviceaccount/token)
 jq --raw-output '. | keys | .[]' <<<'{ "key1": "value1", "key2": "value2" }'
+jq --raw-output '.result | "index=\(.index) sourcetype=\(if .sourcetypes | type == "array" then .sourcetypes[] else .sourcetypes end)"' splunk-index-sourcetype-list.json
 jq --raw-output --join-output '.logs[] | select(.type != "phase").message' < quay-build-log.json ; echo
 jq --raw-output .zerosuggest.cachedresults < ~/.config/google-chrome/Default/Preferences | tail --lines=+2 | jq .
 jq --sort-keys --indent 4 . < filename.json
@@ -756,7 +769,7 @@ kubectl config view
 kubectl config view --minify --raw --output=jsonpath='{..cluster.certificate-authority-data}'
 kubectl cp filename pod_name:/path/to/filename --container=container_name --retries=10
 kubectl cp filename pod_name:filename --container=container_name
-kubectl create --filename=https://ankitpati.in/example.yaml
+kubectl create --filename=https://example.org/example.yaml
 kubectl create job job_name --from=cronjob/cronjob_name
 kubectl debug container_name --stdin --tty --image=image_name --target=pod_name
 kubectl debug node/kind-control-plane --stdin --tty --image=image_name
@@ -877,7 +890,7 @@ lowdown filename.md | xq
 lowdown-diff -tterm filename1.md filename2.md
 lowdown-diff filename1.md filename2.md | xq
 lpass edit --password unique_name
-lpass login contact@ankitpati.in
+lpass login mail@example.org
 lpass ls
 lpass show --field='Public Key' unique_name
 lpass show --sync=now --all unique_name
@@ -930,7 +943,7 @@ minikube status
 modinfo -F version nvidia
 mogrify -format jpg ./*.png
 mojo version
-mount /dev/sda1 -o subvol='@/home/' /btrfs-subvolume-mount
+mount /dev/sda1 -o subvol=@/home/ /btrfs-subvolume-mount
 mount /dev/sda1 -o subvolid=123 /btrfs-subvolume-mount
 mount /dev/sda1 /data
 msfconsole
@@ -942,13 +955,13 @@ mvn --update-snapshots clean install -Dmaven.test.skip=true -Ddependency-check.s
 mvn --update-snapshots clean install -Dmaven.test.skip=true -Ddependency-check.skip=true -Dpmd.skip=true -Dlicense.skip=true
 mvn --update-snapshots clean install -Dmaven.test.skip=true -Ddependency-check.skip=true -Dpmd.skip=true -Dlicense.skip=true -Dtrust_all_cert=true -Dcom.sun.net.ssl.checkRevocation=false -Dtrust_all_cert=true
 mvn -U dependency:tree
-mvn exec:java -Dexec.mainClass=in.ankitpati.ClassName
+mvn exec:java -Dexec.mainClass=org.example.ClassName
 mvn help:effective-pom
 mypy --config-file ~/.mypy.ini
 namei -l "${ command -v perl6; }"
 namei -om /bin/perl6
 nc -lp 5432
-nc -zvv ankitpati.in 443
+nc -zvv example.org 443
 ncdu
 neofetch
 netcat --listen --local-port=8080
@@ -976,8 +989,8 @@ npm cache clean --force
 npm config set prefix "$NPM_PACKAGES"
 npm install --legacy-peer-deps
 npx asar
-nslookup ankitpati.in
-nslookup ankitpati.in 1.1.1.1
+nslookup example.org
+nslookup example.org 1.1.1.1
 nvidia-smi
 objdump -R elf-binary-filename
 objdump -S elf-binary-filename
@@ -994,7 +1007,7 @@ op read op://Private/quay_encrypted_cli_password/password | skopeo login quay.io
 op read op://Private/unique_name/password
 op read op://Private/unique_name/username
 op vault list
-openfortivpn fortigate.ankitpati.in -u ankitpati -p SecretPassword -o 012345
+openfortivpn fortigate.example.org -u ankitpati -p SecretPassword -o 012345
 openssl asn1parse -in openssl.key
 openssl enc -aes-256-cbc -d -base64 -A -md md5 -k redacted -nosalt
 openssl genpkey -algorithm Ed25519 -out root.key
@@ -1015,7 +1028,7 @@ openssl rsa -in openssl.key -text -noout
 openssl rsa -noout -modulus -in filename.key | sha512sum
 openssl s_client -showcerts -connect example.org:443 <<<'' 2>/dev/null | openssl x509 -noout -text | grep 'Not After'
 openssl s_client -showcerts -servername example.org -connect example.org:443 <<<'' 2>/dev/null | tr '\n' '^' | grep --only-matching --extended-regexp -- '-----BEGIN CERTIFICATE-----\^[^-]+\^-----END CERTIFICATE-----' | tail --lines=1 | tr '^' '\n' | openssl x509 -noout -text
-openssl s_client -tls1_3 -auth_level 2 -connect 172.67.192.178:443 -servername ankitpati.in -verify_hostname ankitpati.in -verify_return_error
+openssl s_client -tls1_3 -auth_level 2 -connect 172.67.192.178:443 -servername example.org -verify_hostname example.org -verify_return_error
 openssl storeutl -noout -text -certs filename-bundle.crt | grep -E '^\s+(Subject|Issuer):' | sed 's/^.*CN=//'
 openssl verify -CAfile fullchain.pem cert.pem
 openssl x509 -in ankitpati.pem -text
@@ -1187,7 +1200,7 @@ pgrep -fa jenkins # Linux
 pgrep -x chrome
 pidof -s chrome
 pidof chrome
-ping -s 1500 ankitpati.in
+ping -s 1500 example.org
 pip freeze | cut --delimiter='=' --fields=1 | xargs pip install --upgrade
 pip install --requirement requirements.txt
 pip install --upgrade 'pip < 21'
@@ -1278,7 +1291,7 @@ prettier --log-level=silent --parser=yaml --write -- *.yaml
 prettier -w filename.css
 prettier -w filename.html
 prettier -w filename.js
-prettyping google.com
+prettyping example.org
 printf '%s %s\n' "$CONTAINERS_GRAPHROOT" "$CONTAINERS_RUNROOT"
 printf '%s %s\n' "$LINES" "$COLUMNS"
 printf '%s:%s' 'username' 'password' | base64
@@ -1333,7 +1346,7 @@ readlink -f path/to/filename
 rename -n 's/^00([0-9])-/0${1}0-/' *.sh
 rename -n 's/^\d+_\d+_0(\d)_[^a-z]+_(\w+)\.mp4$/$1. $2.mp4/' -- *
 resolvectl flush-caches
-resolvectl query ankitpati.in
+resolvectl query example.org
 resolvectl status
 restorecon -rvn /etc/X11/xorg.conf.d/
 rg --case-sensitive --sort=path --pcre2 '\b(?<![*$<>-])id(?!(?:[.,=-]| [{[+=]))\b'
@@ -1370,12 +1383,13 @@ sed --in-place --regexp-extended 's,lpass show --(username|password) ([^ )]+),op
 sed --regexp-extended 's/ /\n/g' < /proc/cmdline
 sed --regexp-extended --in-place 's/^([a-zA-Z0-9_-]+)\(\)$/function \1 {/;/^\{$/d' filename.bash
 sed -i -E 's|#!/usr/bin/octave -q|#!/usr/bin/env -S octave -q|g' -- *.m
-sendmail -v contact@ankitpati.in <<<'Subject: Hello\n'
+sendmail -v mail@example.org <<<'Subject: Hello\n'
 sensors
 seq -w 000 007 | while read -r num; do cat "input$num.txt"; read -r; cat "output$num.txt"; read -r; done
 sestatus
 sha256sum -c filename-CHECKSUM
 sha512sum --status --strict -c <<<'f65f341b35981fda842b09b2c8af9bcdb7602a4c2e6fa1f7d41f0974d3e3122f268fc79d5a4af66358f5133885cd1c165c916f80ab25e5d8d95db46f803c782c hello.txt'
+shellcheck --external-sources filename.sh
 shellharden --replace filename.bash
 shellharden filename.bash
 shfmt -w -s filename.bash
@@ -1429,21 +1443,21 @@ src search 'case:yes context:global file:filename.ext patternType:literal'
 src search 'case:yes context:global patternType:literal repo:^github\.com/ankitpati/rpg$ bitcount'
 src search 'type:repo tcount'
 ss -tulpn
-ssh -G ssh.ankitpati.in
-ssh -L 8080:/tmp/sockname.sock ssh.ankitpati.in
-ssh -o ClearAllForwardings=yes ssh.ankitpati.in
-ssh -o IPQoS=none ssh.ankitpati.in
-ssh -vvv ssh.ankitpati.in
-ssh-copy-id -o PasswordAuthentication=yes ssh.ankitpati.in
-ssh-keygen -R ssh.ankitpati.in
+ssh -G ssh.example.org
+ssh -L 8080:/tmp/sockname.sock ssh.example.org
+ssh -o ClearAllForwardings=yes ssh.example.org
+ssh -o IPQoS=none ssh.example.org
+ssh -vvv ssh.example.org
+ssh-copy-id -o PasswordAuthentication=yes ssh.example.org
+ssh-keygen -R ssh.example.org
 ssh-keygen -l -v -f ~/.ssh/id_ed25519
 ssh-keygen -l -v -f ~/.ssh/id_ed25519.pub
 ssh-keygen -m PEM -t rsa -b 2048 -P '' -C '' -f ./rsa_private_key.pem
 ssh-keygen -t ed25519
 ssh-keygen -t ed25519 -P '' -f ~/.ssh/id_ed25519
 ssh-keygen -y -f ~/.ssh/id_ed25519 > ~/.ssh/id_ed25519.pub
-sslscan ankitpati.in:443
-sslyze ankitpati.in:443
+sslscan example.org:443
+sslyze example.org:443
 sss_cache -E
 stat -c '%w' filename
 steampipe plugin install aws
@@ -1498,7 +1512,7 @@ tar --create --file=filename.tar directory/
 tar --extract --file=filename.tar --directory=directory/
 tar --list --file=filename.tar
 tccutil reset ScreenCapture com.google.Chrome
-telnet google.com & telnet_pid="$!" && ( sleep 5; kill "$telnet_pid" ) && fg; unset telnet_pid
+telnet example.org & telnet_pid=$! && ( sleep 5; kill "$telnet_pid" ) && fg; unset telnet_pid
 terminal-notifier <<<'macOS Notification Text'
 terraform 0.12checklist
 terraform 0.12upgrade -yes
@@ -1527,6 +1541,9 @@ terraform state rm null_resource.resource_name
 terraform state show module.compute.google_compute_address.compute-array[0]
 terraform taint module.module_name
 terraform validate
+terraform version -json | jq --raw-output .terraform_version
+tflint --fix --minimum-failure-severity=notice --recursive
+tfsort .
 timedatectl set-timezone Asia/Kolkata
 timeout --signal INT 3 sleep 10
 tmux a
@@ -1539,7 +1556,7 @@ toolbox reset
 toolbox rm --all
 toolbox rm fedora-toolbox-34
 toolbox rmi --all
-traceroute ankitpati.in
+traceroute example.org
 tree -L 2
 tree -a
 tweak filename.txt
@@ -1606,7 +1623,7 @@ vmrun start ~/Virtual\ Machines.localized/vm_name.vmwarevm/ nogui
 voila filename.ipynb
 volatility
 vulkaninfo
-wappalyzer https://ankitpati.in | jq .
+wappalyzer https://example.org | jq .
 wash -i wlp2s0
 watch -n 10 du -sh
 watch du -sh
@@ -1626,7 +1643,6 @@ xargs --max-lines 1 --open-tty rg < file-with-search-terms.txt
 xattr -l filename
 xattr filename
 xclip < ~/.ssh/id_ed25519.pub
-xclip < ~/Code/ankitpati.in/public/gpg.asc
 xclip-copyfile filename
 xcode-select --install
 xcodebuild -license
