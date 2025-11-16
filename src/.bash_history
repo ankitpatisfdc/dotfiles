@@ -5,14 +5,14 @@
 ( GH_ORIGIN=origin; PULL_REQUEST_ID=12345; git pull "$GH_ORIGIN" "pull/$PULL_REQUEST_ID/head" )
 ( GH_USERNAME=ankitpati; age -r "${ curl --header "Authorization: token ${ op read op://Private/github_personal_access_token/password; }" "https://github.example.org/api/v3/users/$GH_USERNAME/keys" | jq --raw-output .[0].key; }" --output cipher.txt.age plain.txt )
 ( GH_USERNAME=ankitpati; curl --silent "https://api.github.com/users/$GH_USERNAME/repos?per_page=${ curl --silent "https://api.github.com/users/$GH_USERNAME" | jq --raw-output .public_repos; }" ) | jq --raw-output0 '.[].html_url + ".git"' | xargs --no-run-if-empty --null --max-args 1 git clone --recurse-submodules
-( filename=depot/directory/filename; p4 sync "$filename#$(( "${ p4 have "$filename" | cut -d# -f2 | cut -d' ' -f1; }" - 1 ))" )
+( filename=depot/directory/filename; p4 sync "$filename#$(( "${ p4 have "$filename" | cut --delimiter='#' --fields=2 | cut --delimiter=' ' --fields=1; }" - 1 ))" )
 ( find . -type f -iname '*.py' ; grep --ignore-case --files-with-matches --extended-regexp '/(env )?python' --recursive . 2>/dev/null ) | sort --unique | xargs --open-tty vim
 ( hostname=example.org; openssl s_client -auth_level 2 -connect "$hostname":443 -servername "$hostname" -verify_hostname "$hostname" -verify_return_error )
 ( hostname=example.org; openssl s_client -tls1_3 -auth_level 2 -connect "$hostname":443 -servername "$hostname" -verify_hostname "$hostname" -verify_return_error )
 ( perforce_dir=//depot/directory; p4 dirs "$perforce_dir/*" | while read -r perforce_subdir; do p4 grep -e 'search-expression' "$perforce_subdir/..."; done )
 ( perforce_dir=//depot/directory; p4 dirs "$perforce_dir/*"; p4 sizes -sh "$perforce_dir/..." )
 ( ssh_private_key_file=id_ed25519; ssh-keygen -l -v -f "$ssh_private_key_file" && ssh-keygen -y -f "$ssh_private_key_file" && cat "$ssh_private_key_file" )
-( unalias -a; comm -12 <(hash -r; ls {,/usr}/{,s}bin/ | xargs command -V 2>/dev/null | grep -Ev " is (${ brew --prefix; }/|a shell (builtin|keyword))" | cut -d' ' -f1 | sort -u) <(ls "${ brew --repo; }/Library/Taps/homebrew/homebrew-core/Formula/" | rev | cut -d. -f2- | rev | sort -u) )
+( unalias -a; comm -12 <(hash -r; ls {,/usr}/{,s}bin/ | xargs command -V 2>/dev/null | grep -Ev " is (${ brew --prefix; }/|a shell (builtin|keyword))" | cut --delimiter=' ' --fields=1 | sort -u) <(ls "${ brew --repo; }/Library/Taps/homebrew/homebrew-core/Formula/" | rev | cut --delimiter=. --fields=2- | rev | sort -u) )
 ./manage.py check auth admin forum
 ./manage.py dbshell
 ./manage.py makemigrations
@@ -169,12 +169,12 @@ code --list-extensions
 code --locate-shell-integration-path bash
 code --uninstall-extension yzane.markdown-pdf --force
 code tunnel --accept-server-license-terms
-comm -23 <(grep -P '^brew install (?!--cask )' ~/Code/Dotfiles/src/.bash_history | cut -d' ' -f3) <(brew leaves --installed-on-request)
+comm -23 <(grep -P '^brew install (?!--cask )' ~/Code/Dotfiles/src/.bash_history | cut --delimiter=' ' --fields=3) <(brew leaves --installed-on-request)
 command -V command
 command -v gnome-shell
 command ssh ssh.example.org
 copyq info
-cpan-outdated -p | xargs cpanm; echo $?; pip list --outdated --format=freeze | cut -d= -f1 | grep -Ev '^(GDAL|python-poppler-qt5|slip|wxPython)$' | xargs pip install --user -U; echo $?; mypy --install-types; echo $?; cargo install-update -a; echo $?; npm update -g; echo $?; sdk selfupdate; echo $?; sdk update; echo $?; for java_sdk in ${ grep '^sdk install ' ~/.bash_history | cut -d' ' -f3 | sort -u; }; do sdk upgrade "$java_sdk"; done; find ~/.sdkman/ -type f \( -name '*.exe' -o -name '*.bat' \) -delete; vim +PlugUpgrade +PlugUpdate +qa; nvim +PlugUpgrade +PlugUpdate +qa; for codext in ${ code --list-extensions; }; do code --install-extension "$codext" --force; done; echo $?; flutter upgrade; echo $?; flutter doctor -v; echo $?; gcloud components update; echo $?; steampipe plugin update --all; echo $?; tldr --update; echo $?
+cpan-outdated -p | xargs cpanm; echo $?; pip list --outdated --format=freeze | cut --delimiter='=' --fields=1 | grep -Ev '^(GDAL|python-poppler-qt5|slip|wxPython)$' | xargs pip install --user -U; echo $?; mypy --install-types; echo $?; cargo install-update -a; echo $?; npm update -g; echo $?; sdk selfupdate; echo $?; sdk update; echo $?; for java_sdk in ${ grep '^sdk install ' ~/.bash_history | cut --delimiter=' ' --fields=3 | sort -u; }; do sdk upgrade "$java_sdk"; done; find ~/.sdkman/ -type f \( -name '*.exe' -o -name '*.bat' \) -delete; vim +PlugUpgrade +PlugUpdate +qa; nvim +PlugUpgrade +PlugUpdate +qa; for codext in ${ code --list-extensions; }; do code --install-extension "$codext" --force; done; echo $?; flutter upgrade; echo $?; flutter doctor -v; echo $?; gcloud components update; echo $?; steampipe plugin update --all; echo $?; tldr --update; echo $?
 cpdf -draft -squeeze filename.pdf -o filename-draft-squeeze.pdf
 cpdf -draft filename.pdf -o filename-sans-images.pdf
 cpdf -squeeze filename.pdf -o filename-squeeze.pdf
@@ -183,7 +183,7 @@ crane catalog docker.io
 crane ls quay.io/ankitpati/tigress
 crane manifest quay.io/ankitpati/tigress | jq .
 crontab -e
-csv -f protocol,root_domain,status < nextdns-log.csv | tail --lines=+2 | grep -v ',blocked$' | rev | cut -d, -f2- | rev | sort -u > nextdns-domain-list.csv
+csv -f protocol,root_domain,status < nextdns-log.csv | tail --lines=+2 | grep -v ',blocked$' | rev | cut --delimiter=, --fields=2- | rev | sort -u > nextdns-domain-list.csv
 csvprintf '%1$s\n' < filename.csv | wc -l
 csvprintf -n '%1$s %2$s %3$s\n' < filename.csv
 csvq 'select username from lpass_export where username like "prefix_%"'
@@ -208,7 +208,7 @@ curl --proxytunnel --proxy https://squid.example.org:1080 https://example.org
 curl --remote-name https://example.org/download?file=filename.c
 curl --resolve example.org:80:127.0.0.1 http://example.org
 curl --silent --header "Authorization: Bearer ${ gcloud auth application-default print-access-token; }" 'https://www.googleapis.com/compute/v1/projects/project_id/zones/us-west1-a/instanceGroups/k8s-ig--0000000000000000' | jq .
-curl --silent --include https://example.org | head --lines=1 | cut -d' ' -f2
+curl --silent --include https://example.org | head --lines=1 | cut --delimiter=' ' --fields=2
 curl --silent https://www.toptal.com/developers/gitignore/api/list | tr , '\n'; echo
 curl --verbose --location 'https://example.org/12345' 2>&1 | dos2unix | grep --only-matching --perl-regexp '(?<=^< location: ).*$' | grep --colour 12345
 curl --write-out '\n%{time_total} - %{time_starttransfer}\n' https://httpbin.org/get | tail --lines=1 | bc
@@ -218,7 +218,7 @@ curl https://example.org/gpg.asc --output /etc/apt/trusted.gpg.d/ankitpati.asc
 curl https://github.com/web-flow.gpg | gpg --import
 curl https://gitlab.com/api/v4/users/ankitpati/projects | jq --raw-output --arg random_index $((RANDOM % 13)) '.[$random_index | tonumber]'
 curl https://ident.me; echo; exec cat
-cut -f2,3 /proc/net/route | grep ^00000000 | cut -f2 | sed 's/../0x&\n/g' | tac | xargs printf '%u.%u.%u.%u\n'
+cut --fields=2,3 /proc/net/route | grep ^00000000 | cut --fields=2 | sed 's/../0x&\n/g' | tac | xargs printf '%u.%u.%u.%u\n'
 dart --disable-analytics
 date +%F
 date +%s
@@ -340,7 +340,7 @@ export GH_TOKEN=${ op read op://Private/github_personal_access_token/password; }
 export GITHUB_PERSONAL_ACCESS_TOKEN=${ op read op://Private/github_personal_access_token/password; }
 export JAVA_HOME=${ /usr/libexec/java_home --failfast --version=11; }
 export KUBECONFIG=kubeconfig.yaml
-export P4CLIENT=${ p4 clients -u "${ p4 client -o | grep '^Owner:' | cut -f2; }" | cut -d' ' -f1-5 | grep " /client/root\$" | cut -d' ' -f2; }
+export P4CLIENT=${ p4 clients -u "${ p4 client -o | grep '^Owner:' | cut --fields=2; }" | cut --delimiter=' ' --fields=1-5 | grep " /client/root\$" | cut --delimiter=' ' --fields=2; }
 export SRC_ACCESS_TOKEN=${ op read op://Private/sourcegraph_access_token/password; }
 eza --all --classify --git --git-ignore --group-directories-first --header --icons --inode --long
 factor 1849
@@ -374,7 +374,7 @@ fdupes -rNd .
 fdupes .
 figlet Type your message here.
 file -i filename
-find . -exec sha256sum {} + 2>/dev/null | cut -d' ' -f1 | paste -sd' ' | sed 's/ //g' | perl -pi -E 'chomp if eof' | sha256sum
+find . -exec sha256sum {} + 2>/dev/null | cut --delimiter=' ' --fields=1 | paste -sd' ' | sed 's/ //g' | perl -pi -E 'chomp if eof' | sha256sum
 find . -maxdepth 1 -print0 | xargs --null --max-args 1 du --human-readable --summarize | sort --human-numeric-sort
 find . -maxdepth 1 -type d -mtime 0
 find . -maxdepth 1 -type d -mtime 2
@@ -385,7 +385,7 @@ find . -type d -name .git -printf '%h\n' | while read -r directory; do cd "$dire
 find . -type f -exec chmod 0600 {} + -exec dos2unix {} +
 find . -type f -exec mv -t /directory/ {} +
 find . -type f -exec perl -pi -E 's{#!\s*(?:/usr)?/bin/(?!env\b)(\S+)([ \t]*(?=\S))}{#!/usr/bin/env ${\($2 ? "-S " : "")}$1$2}' {} +
-find . -type f -name '*.expanded-csr' -exec openssl req -noout -text -in {} \; | grep -E '^\s+DNS:' | sed 's/, /\n/g' | cut -d: -f2- | sort -u | paste -sd,
+find . -type f -name '*.expanded-csr' -exec openssl req -noout -text -in {} \; | grep -E '^\s+DNS:' | sed 's/, /\n/g' | cut --delimiter=: --fields=2- | sort -u | paste -sd,
 find . -type f -name '*.lastUpdated' -delete
 find . -type f -name 'filename_with_ip_addresses' -exec grep --perl-regexp --only-matching --no-filename '(?:[0-9]+\.){3}[0-9]+/[0-9]+' {} + | sort --unique | while read -r subnet; do subnetcalc "$subnet" -n; done
 find . -type f -name requirements.txt -exec pip install -r {} \;
@@ -506,7 +506,7 @@ git -C "${ git rev-parse --show-toplevel; }" log origin/main..branch_name --form
 git -C "${ git rev-parse --show-toplevel; }" show --patch ':^*.asc'
 git add --patch
 git branch --format='%(refname:short)' | while read -r branch; do git checkout "$branch" || break; git rebase origin/main || break; done
-git branch -r | grep -E '^\s+origin/' | grep -v HEAD | cut -d/ -f2 | xargs git push ankitpati -d
+git branch -r | grep -E '^\s+origin/' | grep -v HEAD | cut --delimiter=/ --fields=2 | xargs git push ankitpati -d
 git branch -vv
 git checkout --patch
 git cherry-pick branchname~2..branchname
@@ -532,7 +532,7 @@ git log --patch
 git log --patch --author=mail@example.org
 git log --patch -G search_term
 git log --pretty=email
-git log --pretty=format:%ae | sort -u | cut -d@ -f2- | sort -u
+git log --pretty=format:%ae | sort -u | cut --delimiter=@ -f2- | sort -u
 git ls-files -v | grep '^H '
 git merge --ff-only branchname
 git merge-base HEAD branchname
@@ -586,11 +586,11 @@ gpg2 --with-fingerprint filename.gpg
 gpg2 -c --no-symkey-cache filename.br
 gradle
 gradle --stop
-grep '\bcertificate-authority-data\b' kubeconfig.yaml | cut -d: -f2 | cut -d' ' -f2 | while read -r certbase64; do base64 -d <<<"$certbase64" | openssl x509 -text -noout; done
-grep '^p4 sync ' ~/.bash_history | cut -d' ' -f3- | sort -u | while read -r p4dir; do p4 sync "$p4dir"; done
+grep '\bcertificate-authority-data\b' kubeconfig.yaml | cut --delimiter=: --fields=2 | cut --delimiter=' ' --fields=2 | while read -r certbase64; do base64 -d <<<"$certbase64" | openssl x509 -text -noout; done
+grep '^p4 sync ' ~/.bash_history | cut --delimiter=' ' --fields=3- | sort -u | while read -r p4dir; do p4 sync "$p4dir"; done
 grep --extended-regexp --line-regexp "${ paste --serial --delimiters='|' <<<"${ command -v bash cut dos2unix grep jq sed tail watch | rev | cut --delimiter=/ --fields=2- | rev | sort --unique; }"; }" <<<"${PATH//:/$'\n'}" | sed 's,^/usr/local/,${ brew --prefix; }/,' | paste --serial --delimiters=:
 grep --extended-regexp --line-regexp "${ paste --serial --delimiters='|' <<<"${ command -v grep cut sed watch tail bash dos2unix jq | rev | cut --delimiter=/ --fields=2- | rev | sort --unique; }"; }" <<<"${PATH//:/$'\n'}" | sed 's,^/usr/local/,${ brew --prefix; }/,' | paste --serial --delimiters=:
-grep -E "^(${ tail --lines=+2 brew-deps.csv | cut -d, -f1 | comm -23 - brew-install-list.txt | paste -sd'|'; })" brew-deps.csv | grep -v ,
+grep -E "^(${ tail --lines=+2 brew-deps.csv | cut --delimiter=, --fields=1 | comm -23 - brew-install-list.txt | paste -sd'|'; })" brew-deps.csv | grep -v ,
 grep -E '^\s+keg_only' -r "${ brew --repo; }/Library/Taps/homebrew/homebrew-core/Formula/"
 grep -Elr -- '^(<<<<<<< HEAD|=======|>>>>>>> [[:xdigit:]]+ .*)$' | sort -u | xargs --open-tty vim
 grep -l search-string -r . | xargs --open-tty vim
@@ -674,7 +674,7 @@ istioctl install --set=revision=release
 istioctl operator dump | yq .
 istioctl proxy-status
 istioctl proxy-status --revision=1-16-0
-istioctl proxy-status --revision=1-16-0 | tail --lines=+2 | cut --delimiter=' ' -f1 | cut --delimiter=. --fields=1,2 --output-delimiter=' ' | while read -r pod namespace; do kubectl delete pod "$pod" --namespace="$namespace"; done
+istioctl proxy-status --revision=1-16-0 | tail --lines=+2 | cut --delimiter=' ' --fields=1 | cut --delimiter=. --fields=1,2 --output-delimiter=' ' | while read -r pod namespace; do kubectl delete pod "$pod" --namespace="$namespace"; done
 istioctl proxy-status --revision=default
 istioctl proxy-status | grep "${ kubectl get pods --namespace=istio-system --selector=app=istio-ingressgateway --output=jsonpath='{.items..metadata.name}'; }"
 istioctl tag list
@@ -895,7 +895,7 @@ lpass ls
 lpass show --field='Public Key' unique_name
 lpass show --sync=now --all unique_name
 lpass show unique_name
-ls "${ brew --prefix; }/bin/g"* | rev | cut -d/ -f1 | rev | cut -dg -f2- | xargs --no-run-if-empty command -v 2>/dev/null | grep -v "^${ brew --prefix; }/" | rev | cut -d/ -f1 | rev | while read -r binary; do printf '%s/bin/g%s\n' "${ brew --prefix; }" "$binary"; done | xargs --no-run-if-empty ls -l | rev | cut -d/ -f4 | rev | sort -u
+ls "${ brew --prefix; }/bin/g"* | rev | cut --delimiter=/ --fields=1 | rev | cut --delimiter=g --fields=2- | xargs --no-run-if-empty command -v 2>/dev/null | grep -v "^${ brew --prefix; }/" | rev | cut --delimiter=/ --fields=1 | rev | while read -r binary; do printf '%s/bin/g%s\n' "${ brew --prefix; }" "$binary"; done | xargs --no-run-if-empty ls -l | rev | cut --delimiter=/ --fields=4 | rev | sort -u
 ls *.json | while read -r jsonfile; do jq --sort-keys --indent 4 . < "$jsonfile" | sponge "$jsonfile"; done
 ls /Library/Launch{Agents,Daemons}
 ls ~/Library/Application\ Support/Code/User/settings.json
@@ -935,7 +935,7 @@ microk8s kubectl get all --all-namespaces
 microk8s status --wait-ready
 minikube config set driver docker
 minikube config set kubernetes-version "${ brew livecheck --json kubernetes-cli | jq --raw-output '.[0].version.latest'; }"
-minikube config set kubernetes-version "${ git ls-remote --sort=v:refname --tags https://github.com/kubernetes/kubernetes.git 'v*^{}' | cut -dv -f2 | cut -d^ -f1 | grep -P '^\d+\.\d+\.\d+$' | tail --lines=1; }"
+minikube config set kubernetes-version "${ git ls-remote --sort=v:refname --tags https://github.com/kubernetes/kubernetes.git 'v*^{}' | cut --delimiter=v --fields=2 | cut --delimiter=^ --fields=1 | grep -P '^\d+\.\d+\.\d+$' | tail --lines=1; }"
 minikube config view
 minikube delete
 minikube start
@@ -1048,13 +1048,13 @@ p4 branch -o branch_name
 p4 branches -e 'branch_name_*'
 p4 branches //depot/directory/...
 p4 change -o 12345
-p4 changes -e 12345 filename | cut -d' ' -f2 | xargs p4 describe -du5 | delta
+p4 changes -e 12345 filename | cut --delimiter=' ' --fields=2 | xargs p4 describe -du5 | delta
 p4 changes -l
 p4 changes -lc client_name
 p4 changes -m 1 //depot/directory/filename
-p4 changes -m 10 ... | cut -d' ' -f2 | xargs p4 describe -du5 | delta
+p4 changes -m 10 ... | cut --delimiter=' ' --fields=2 | xargs p4 describe -du5 | delta
 p4 changes -m 10 directory/...
-p4 changes -u "$USER" -s submitted | head --lines=5 | cut -d' ' -f2 | while read -r cl_number; do printf '@=%s\n' "$cl_number"; done | xargs p4 files -e | cut -d# -f1 | sort -u | while read -r source_depot_path; do p4 integrate "$source_depot_path" "${source_depot_path//\/directory1\///directory2/}"; done
+p4 changes -u "$USER" -s submitted | head --lines=5 | cut --delimiter=' ' --fields=2 | while read -r cl_number; do printf '@=%s\n' "$cl_number"; done | xargs p4 files -e | cut --delimiter='#' --fields=1 | sort -u | while read -r source_depot_path; do p4 integrate "$source_depot_path" "${source_depot_path//\/directory1\///directory2/}"; done
 p4 changes -u username
 p4 changes -u username -s pending
 p4 changes ...
@@ -1099,7 +1099,7 @@ p4 files //depot/.../\*.pl
 p4 files //depot/.../filename
 p4 files //depot/...file\*.pl
 p4 grep -Fe expression //depot/...
-p4 grep -lsFe expression //depot/... | cut -d# -f1 | xargs --open-tty vim
+p4 grep -lsFe expression //depot/... | cut --delimiter='#' --fields=1 | xargs --open-tty vim
 p4 groups
 p4 groups username
 p4 have path/to/filename
@@ -1110,7 +1110,7 @@ p4 integrate -nc 12346 //depot/directory/branch1...@12345,@12345 //depot/directo
 p4 login
 p4 login -as
 p4 monitor show
-p4 monitor show | grep -v ' monitor $' | grep -F " $USER " | sed 's/^ \+//' | cut -d' ' -f1 | xargs --max-args 1 p4 monitor terminate
+p4 monitor show | grep -v ' monitor $' | grep -F " $USER " | sed 's/^ \+//' | cut --delimiter=' ' --fields=1 | xargs --max-args 1 p4 monitor terminate
 p4 monitor terminate 12345
 p4 move -n directory/filename.old directory/filename.new
 p4 opened
@@ -1141,7 +1141,7 @@ p4 undo @12345
 p4 unshelve -s 12345 -c 12346
 p4 user
 p4 user -o
-p4 where . | cut -d' ' -f1
+p4 where . | cut --delimiter=' ' --fields=1
 p4 where directory
 p4 where filename
 package-cleanup
@@ -1507,7 +1507,7 @@ systemctl set-property service_name.service IOWeight=1
 systemctl status snap.microk8s.daemon-containerd.service
 systemctl stop gdm.service
 systemd-analyze cat-config systemd/resolved.conf
-tail --lines=+2 brew-deps.csv | cut -d, -f1 | comm -23 - brew-install-list.txt | while read -r brew_formula; do grep "^$brew_formula" brew-deps.csv; done
+tail --lines=+2 brew-deps.csv | cut --delimiter=, --fields=1 | comm -23 - brew-install-list.txt | while read -r brew_formula; do grep "^$brew_formula" brew-deps.csv; done
 tar --create --file=filename.tar directory/
 tar --extract --file=filename.tar --directory=directory/
 tar --list --file=filename.tar
