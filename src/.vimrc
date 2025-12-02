@@ -54,6 +54,7 @@ set nocompatible
     g:blamer_show_in_insert_modes = false
     g:blamer_show_in_visual_modes = false
     g:blamer_template = '<committer-mail> <committer-time> <summary>'
+    g:codeium_enabled = false
     g:java_ignore_markdown = true
 # End of Plugin Config
 
