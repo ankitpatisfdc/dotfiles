@@ -48,13 +48,13 @@ do
     vim.g.ale_python_ruff_options = "--ignore=E501"
     vim.g.ale_sql_sqlfluff_options = "--dialect postgres"
     vim.g.ale_virtualtext_cursor = "disabled"
-
     vim.g.blamer_date_format = "%Y-%m-%dT%H:%M:%S%Z"
     vim.g.blamer_delay = 0
     vim.g.blamer_enabled = true
     vim.g.blamer_show_in_insert_modes = false
     vim.g.blamer_show_in_visual_modes = false
     vim.g.blamer_template = "<committer-mail> <committer-time> <summary>"
+    vim.g.codeium_enabled = false
     vim.g.java_ignore_markdown = true
 end
 -- End of Plugin Config
