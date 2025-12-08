@@ -15,7 +15,12 @@
     pager = delta
 #   pager = diff-so-fancy | less --tabs=4 -RFX
 [delta]
+    blame-format = {timestamp:0} {commit:0} {author:0}
+    blame-separator-format = none
+    blame-timestamp-output-format = %Y%m%d %H%M%Z
+    default-language = bash
     keep-plus-minus-markers = true
+    line-buffer-size = 512
     max-line-distance = 1.0
     max-line-length = 0
 [diff]
