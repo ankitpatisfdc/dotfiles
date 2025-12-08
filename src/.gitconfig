@@ -15,6 +15,7 @@
     pager = delta
 #   pager = diff-so-fancy | less --tabs=4 -RFX
 [delta]
+    keep-plus-minus-markers = true
     max-line-distance = 1.0
     max-line-length = 0
 [diff]
