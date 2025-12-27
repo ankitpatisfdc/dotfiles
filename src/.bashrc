@@ -413,27 +413,27 @@ function add_brewed_items_to_env {
 }
 
 function setup_prompt {
-    local clear_format='\[\e[m\]'
-    local dark_cyan='\[\e[36m\]'
-    local dark_magenta='\[\e[35m\]'
-    local dark_yellow='\[\e[33m\]'
-    local bright_cyan='\[\e[96m\]'
-    local bright_magenta='\[\e[95m\]'
-    local bright_yellow='\[\e[93m\]'
-    local dark_blue='\[\e[34m\]'
+    local -r clear_format='\[\e[m\]'
+    local -r dark_cyan='\[\e[36m\]'
+    local -r dark_magenta='\[\e[35m\]'
+    local -r dark_yellow='\[\e[33m\]'
+    local -r bright_cyan='\[\e[96m\]'
+    local -r bright_magenta='\[\e[95m\]'
+    local -r bright_yellow='\[\e[93m\]'
+    local -r dark_blue='\[\e[34m\]'
 
-    local year="$dark_cyan"'\D{%Y}'
-    local month="$dark_magenta"'\D{%m}'
-    local day_of_month="$dark_yellow"'\D{%d}'
-    local hour="$bright_cyan"'\D{%H}'
-    local minute="$bright_magenta"'\D{%M}'
-    local second="$bright_yellow"'\D{%S}'
-    local timezone="$dark_blue"'\D{%z}'
-    local long_timestamp="$year$month$day_of_month$hour$minute$second$timezone"
-    local short_timestamp="$hour$minute"
+    local -r year="$dark_cyan"'\D{%Y}'
+    local -r month="$dark_magenta"'\D{%m}'
+    local -r day_of_month="$dark_yellow"'\D{%d}'
+    local -r hour="$bright_cyan"'\D{%H}'
+    local -r minute="$bright_magenta"'\D{%M}'
+    local -r second="$bright_yellow"'\D{%S}'
+    local -r timezone="$dark_blue"'\D{%z}'
+    local -r long_timestamp="%coloured_command_duration%$year$month$day_of_month$hour$minute$second$timezone"
+    local -r short_timestamp="%coloured_command_duration%$hour$minute"
 
-    local situation='\u@\h \w'
-    local euid_indicator='\$'
+    local -r situation='\u@\h \w'
+    local -r euid_indicator='\$'
 
     readonly PROMPT_LEGROOM=10
 
@@ -444,10 +444,25 @@ function setup_prompt {
     readonly LONG_PROMPT="$LONG_COMMON_PROMPT $situation $euid_indicator "
     readonly SHORT_PROMPT="$SHORT_COMMON_PROMPT $euid_indicator "
     readonly SHORTEST_PROMPT="$SHORTEST_COMMON_PROMPT%coloured_euid_indicator%$clear_format "
+
+    PS0='${ COMMAND_START_TIME=$EPOCHSECONDS; }'
 }
 
 function set_prompt {
-    local exit_code=$?
+    local -r exit_code=$?
+
+    local command_duration_natural=''
+    if [[ -n ${COMMAND_START_TIME:-} ]]
+    then
+        local -r command_duration=$((EPOCHSECONDS - COMMAND_START_TIME))
+        unset COMMAND_START_TIME
+
+        if ((command_duration > 5))
+        then
+            command_duration_natural="${command_duration}s "
+        fi
+    fi
+    readonly command_duration_natural
 
     local _ cursor_position_x
     IFS='[;' read -p $'\001\e[6n\002' -d R -rs _ _ cursor_position_x _
@@ -455,12 +470,15 @@ function set_prompt {
     then
         echo
     fi
+    readonly cursor_position_x
 
-    local bright_green='\[\e[92m\]'
-    local bright_red='\[\e[91m\]'
+    local -r bright_green='\[\e[92m\]'
+    local -r bright_red='\[\e[91m\]'
+    local -r bright_gray='\[\e[90m\]'
 
     local coloured_exit_code
     local coloured_euid_indicator
+    local -r coloured_command_duration="$bright_gray$command_duration_natural"
 
     if ((exit_code == 0))
     then
@@ -473,13 +491,16 @@ function set_prompt {
 
     local formatted_exit_code
     printf -v formatted_exit_code '%03u' "$exit_code"
+    readonly formatted_exit_code
     coloured_exit_code+=$formatted_exit_code
+    readonly coloured_exit_code
 
-    local euid_indicator='\$'
+    local -r euid_indicator='\$'
 
     coloured_euid_indicator+=$euid_indicator
+    readonly coloured_euid_indicator
 
-    local max_prompt_length=$((COLUMNS - PROMPT_LEGROOM))
+    local -r max_prompt_length=$((COLUMNS - PROMPT_LEGROOM))
     local long_prompt=$LONG_PROMPT
     local short_prompt=$SHORT_PROMPT
     local shortest_prompt=$SHORTEST_PROMPT
@@ -489,6 +510,7 @@ function set_prompt {
         local add_on_ps1
 
         gitsh_prompt add_on_ps1
+        readonly add_on_ps1
 
         long_prompt="$LONG_COMMON_PROMPT $add_on_ps1"
         short_prompt="$SHORT_COMMON_PROMPT $add_on_ps1"
@@ -497,23 +519,34 @@ function set_prompt {
 
     long_prompt=${long_prompt/'%coloured_exit_code%'/$coloured_exit_code}
     long_prompt=${long_prompt/'%coloured_euid_indicator%'/$coloured_euid_indicator}
+    long_prompt=${long_prompt/'%coloured_command_duration%'/$coloured_command_duration}
+    readonly long_prompt
+
     local expanded_long_prompt=${long_prompt@P}
     PS1=$expanded_long_prompt
     discolour_enclosed_ansi expanded_long_prompt
+    readonly expanded_long_prompt
 
     if ((${#expanded_long_prompt} > max_prompt_length))
     then
         short_prompt=${short_prompt/'%coloured_exit_code%'/$coloured_exit_code}
         short_prompt=${short_prompt/'%coloured_euid_indicator%'/$coloured_euid_indicator}
+        short_prompt=${short_prompt/'%coloured_command_duration%'/$coloured_command_duration}
+        readonly short_prompt
+
         local expanded_short_prompt=${short_prompt@P}
         PS1=$expanded_short_prompt
         discolour_enclosed_ansi expanded_short_prompt
+        readonly expanded_short_prompt
 
         if ((${#expanded_short_prompt} > max_prompt_length))
         then
             shortest_prompt=${shortest_prompt/'%coloured_exit_code%'/$coloured_exit_code}
             shortest_prompt=${shortest_prompt/'%coloured_euid_indicator%'/$coloured_euid_indicator}
-            local expanded_shortest_prompt=${shortest_prompt@P}
+            shortest_prompt=${shortest_prompt/'%coloured_command_duration%'/$coloured_command_duration}
+            readonly shortest_prompt
+
+            local -r expanded_shortest_prompt=${shortest_prompt@P}
             PS1=$expanded_shortest_prompt
         fi
     fi
