@@ -459,7 +459,26 @@ function set_prompt {
 
         if ((command_duration > 5))
         then
-            command_duration_natural="${command_duration}s "
+            local -r hours=$((command_duration / 3600))
+            local -r minutes=$((command_duration % 3600 / 60))
+            local -r seconds=$((command_duration % 60))
+
+            if ((hours != 0))
+            then
+                command_duration_natural+="${hours}h"
+            fi
+
+            if ((minutes != 0))
+            then
+                command_duration_natural+="${minutes}m"
+            fi
+
+            if ((seconds != 0))
+            then
+                command_duration_natural+="${seconds}s"
+            fi
+
+            command_duration_natural+=' '
         fi
     fi
     readonly command_duration_natural
