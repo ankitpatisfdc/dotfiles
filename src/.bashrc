@@ -435,7 +435,7 @@ function setup_prompt {
     local -r situation='\u@\h \w'
     local -r euid_indicator='\$'
 
-    readonly PROMPT_LEGROOM=10
+    declare -gri PROMPT_LEGROOM=10#10
 
     readonly LONG_COMMON_PROMPT="$clear_format%coloured_exit_code% $long_timestamp$clear_format"
     readonly SHORT_COMMON_PROMPT="$clear_format%coloured_exit_code% $short_timestamp$clear_format"
@@ -445,7 +445,7 @@ function setup_prompt {
     readonly SHORT_PROMPT="$SHORT_COMMON_PROMPT $euid_indicator "
     readonly SHORTEST_PROMPT="$SHORTEST_COMMON_PROMPT%coloured_euid_indicator%$clear_format "
 
-    PS0='${ COMMAND_START_TIME=$EPOCHSECONDS; }'
+    PS0='${ declare -gi COMMAND_START_TIME=10#$EPOCHSECONDS; }'
 }
 
 function set_prompt {
@@ -454,14 +454,14 @@ function set_prompt {
     local command_duration_natural=''
     if [[ -n ${COMMAND_START_TIME:-} ]]
     then
-        local -r command_duration=$((EPOCHSECONDS - COMMAND_START_TIME))
+        local -ri command_duration=10#$((EPOCHSECONDS - COMMAND_START_TIME))
         unset COMMAND_START_TIME
 
         if ((command_duration > 5))
         then
-            local -r hours=$((command_duration / 3600))
-            local -r minutes=$((command_duration % 3600 / 60))
-            local -r seconds=$((command_duration % 60))
+            local -ri hours=10#$((command_duration / 3600))
+            local -ri minutes=10#$((command_duration % 3600 / 60))
+            local -ri seconds=10#$((command_duration % 60))
 
             if ((hours != 0))
             then
@@ -519,7 +519,7 @@ function set_prompt {
     coloured_euid_indicator+=$euid_indicator
     readonly coloured_euid_indicator
 
-    local -r max_prompt_length=$((COLUMNS - PROMPT_LEGROOM))
+    local -ri max_prompt_length=10#$((COLUMNS - PROMPT_LEGROOM))
     local long_prompt=$LONG_PROMPT
     local short_prompt=$SHORT_PROMPT
     local shortest_prompt=$SHORTEST_PROMPT
