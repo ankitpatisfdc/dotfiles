@@ -39,7 +39,6 @@ function gitsh_load_aliases {
         [r]='remote'
         [s]='status --short'
         [t]='diff --staged'
-        [wt]='worktree'
     )
 
     local gitsh_alias
