@@ -230,6 +230,7 @@ function add_brewed_items_to_env {
             cython \
             opencolorio \
             "${brew_postgresql_latest_formula[@]}" \
+            graalvm \
             libxml2 \
             texinfo \
             apr-util \
