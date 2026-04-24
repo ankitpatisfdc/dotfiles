@@ -587,9 +587,11 @@ function main {
         DISABLE_AUTOUPDATER \
         DOCKER_HOST \
         DOTNET_CLI_TELEMETRY_OPTOUT \
+        DO_NOT_TRACK \
         DYLD_LIBRARY_PATH \
         EDITOR \
         GH_HOST \
+        GH_TELEMETRY \
         HOMEBREW_BAT \
         HOMEBREW_BUNDLE_NO_LOCK \
         HOMEBREW_NO_ANALYTICS \
@@ -705,6 +707,8 @@ function main {
 
     # Telemetry
     DOTNET_CLI_TELEMETRY_OPTOUT=1
+    DO_NOT_TRACK='true'
+    GH_TELEMETRY='false'
     HOMEBREW_NO_ANALYTICS=1
     K6_NO_USAGE_REPORT=1
     POWERSHELL_TELEMETRY_OPTOUT=1
