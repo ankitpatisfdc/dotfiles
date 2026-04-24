@@ -582,16 +582,24 @@ function main {
 
     export \
         ANDROID_HOME \
+        ANTHROPIC_BEDROCK_BASE_URL \
         BUILDFARM_HOME \
         CLASSPATH \
+        CLAUDE_CODE_SKIP_BEDROCK_AUTH \
+        CLAUDE_CODE_USE_BEDROCK \
         DISABLE_AUTOUPDATER \
+        DISABLE_BUG_COMMAND \
+        DISABLE_ERROR_REPORTING \
+        DISABLE_TELEMETRY \
         DOCKER_HOST \
         DOTNET_CLI_TELEMETRY_OPTOUT \
         DO_NOT_TRACK \
         DYLD_LIBRARY_PATH \
         EDITOR \
+        FORCE_AUTOUPDATE_PLUGINS \
         GH_HOST \
         GH_TELEMETRY \
+        GW_PROFILE \
         HOMEBREW_BAT \
         HOMEBREW_BUNDLE_NO_LOCK \
         HOMEBREW_NO_ANALYTICS \
@@ -610,6 +618,7 @@ function main {
         NEXUS_TOKEN \
         NEXUS_URL \
         NEXUS_USERNAME \
+        NODE_EXTRA_CA_CERTS \
         NPM_PACKAGES \
         NPM_TOKEN \
         PERL5LIB \
@@ -631,6 +640,7 @@ function main {
         SRC_ENDPOINT \
         SSH_AUTH_SOCK \
         SWARM_HOST \
+        TFENV_ARCH \
         TFENV_AUTO_INSTALL \
         TNS_ADMIN \
         USE_BAZEL_VERSION \
@@ -706,6 +716,9 @@ function main {
     MERGE='vimdiff'
 
     # Telemetry
+    DISABLE_BUG_COMMAND=1
+    DISABLE_ERROR_REPORTING=1
+    DISABLE_TELEMETRY=1
     DOTNET_CLI_TELEMETRY_OPTOUT=1
     DO_NOT_TRACK='true'
     GH_TELEMETRY='false'
