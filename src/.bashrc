@@ -583,6 +583,7 @@ function main {
     export \
         ANDROID_HOME \
         ANTHROPIC_BEDROCK_BASE_URL \
+        ANTHROPIC_BEDROCK_SERVICE_TIER \
         BUILDFARM_HOME \
         CLASSPATH \
         CLAUDE_CODE_SKIP_BEDROCK_AUTH \
