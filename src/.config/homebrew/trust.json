@@ -1,0 +1,9 @@
+{
+    "trustedformulae": [
+        "buildpacks/tap/pack",
+        "hashicorp/tap/packer",
+        "hashicorp/tap/vault",
+        "snyk/tap/snyk",
+        "snyk/tap/snyk-iac-rules"
+    ]
+}
