@@ -591,6 +591,7 @@ grep '\bcertificate-authority-data\b' kubeconfig.yaml | cut --delimiter=: --fiel
 grep '^p4 sync ' ~/.bash_history | cut --delimiter=' ' --fields=3- | sort -u | while read -r p4dir; do p4 sync "$p4dir"; done
 grep --extended-regexp --line-regexp "${ paste --serial --delimiters='|' <<<"${ command -v bash cut dos2unix grep jq sed tail watch | rev | cut --delimiter=/ --fields=2- | rev | sort --unique; }"; }" <<<"${PATH//:/$'\n'}" | sed 's,^/usr/local/,${ brew --prefix; }/,' | paste --serial --delimiters=:
 grep --extended-regexp --line-regexp "${ paste --serial --delimiters='|' <<<"${ command -v grep cut sed watch tail bash dos2unix jq | rev | cut --delimiter=/ --fields=2- | rev | sort --unique; }"; }" <<<"${PATH//:/$'\n'}" | sed 's,^/usr/local/,${ brew --prefix; }/,' | paste --serial --delimiters=:
+grep --perl-regexp --only-matching '(?<=\bbrew\s")([^/"]+/){2}[^/"]+(?=")' ../../scripts/src/Brewfile | sort --unique | jq --indent 4 --raw-input '{ "trustedformulae": [., inputs] }' > .config/homebrew/trust.json
 grep -E "^(${ tail --lines=+2 brew-deps.csv | cut --delimiter=, --fields=1 | comm -23 - brew-install-list.txt | paste -sd'|'; })" brew-deps.csv | grep -v ,
 grep -E '^\s+keg_only' -r "${ brew --repo; }/Library/Taps/homebrew/homebrew-core/Formula/"
 grep -Elr -- '^(<<<<<<< HEAD|=======|>>>>>>> [[:xdigit:]]+ .*)$' | sort -u | xargs --open-tty vim
