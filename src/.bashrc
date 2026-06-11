@@ -608,6 +608,7 @@ function main {
         HOMEBREW_BAT \
         HOMEBREW_BUNDLE_NO_LOCK \
         HOMEBREW_NO_ANALYTICS \
+        HOMEBREW_NO_ASK \
         HOMEBREW_NO_BOTTLE_SOURCE_FALLBACK \
         HOMEBREW_NO_INSECURE_REDIRECT \
         JAVA_HOME \
@@ -755,6 +756,9 @@ function main {
 
     # Brew Bundle Prevent Lockfiles
     HOMEBREW_BUNDLE_NO_LOCK=1
+
+    # Brew Non-interactive Use
+    HOMEBREW_NO_ASK=1
 
     # Claude Code Prevent Auto-Update
     DISABLE_AUTOUPDATER=1
