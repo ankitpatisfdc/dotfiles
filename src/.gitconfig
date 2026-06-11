@@ -70,6 +70,8 @@
 [rerere]
     autoupdate = true
     enabled = true
+[submodule]
+    fetchJobs = 16
 [tag]
     gpgSign = true
     sort = -version:refname
