@@ -1,0 +1,29 @@
+{
+    "autoReload": false,
+    "developerMode": true,
+    "filteringModes": {
+        "basic": [],
+        "complete": [
+            "all-urls"
+        ],
+        "none": [],
+        "optimal": []
+    },
+    "rulesets": [
+        "+adguard-mobile",
+        "+adguard-spyware-url",
+        "+annoyances-ai",
+        "+annoyances-cookies",
+        "+annoyances-notifications",
+        "+annoyances-others",
+        "+annoyances-overlays",
+        "+annoyances-social",
+        "+annoyances-widgets",
+        "+block-lan",
+        "+dpollock-0",
+        "+ublock-experimental",
+        "+ubol-tests"
+    ],
+    "showBlockedCount": false,
+    "version": "2026.614.1502"
+}
