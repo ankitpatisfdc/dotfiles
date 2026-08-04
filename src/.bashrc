@@ -560,6 +560,22 @@ function set_prompt {
     fi
 }
 
+function git_root {
+    local git_top_level
+    git_top_level=${ git rev-parse --show-toplevel 2>/dev/null ||:; }
+    readonly git_top_level
+
+    if [[ -z $git_top_level ]]
+    then
+        return
+    fi
+
+    if ! cd -- "$git_top_level"
+    then
+        exit $?
+    fi
+}
+
 function main {
     if [[ -n ${BASHRC_MAIN_SOURCED:-} ]]
     then
