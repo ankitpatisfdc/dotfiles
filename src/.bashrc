@@ -168,18 +168,6 @@ function discolour_enclosed_ansi {
     coloured_enclosed_ansi=${coloured_enclosed_ansi//$'\001'*([^$'\002'])$'\002'}
 }
 
-# Prepend old binaries to PATH
-function B-oldbin {
-    PATH="$HOME/oldbin:$PATH"
-    sanitize_path PATH
-}
-
-# Prepend temporary binaries to PATH
-function B-tmpbin {
-    PATH="$HOME/tmpbin:$PATH"
-    sanitize_path PATH
-}
-
 function add_brewed_items_to_env {
     if [[ -z ${brew_prefix:-} ]]
     then
