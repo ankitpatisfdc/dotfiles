@@ -840,7 +840,7 @@ function main {
 
     alias chomp='perl -pi -E "chomp if eof"'
     alias cpan-outdated='cpan-outdated --mirror="$PERLBREW_CPAN_MIRROR"'
-    alias cursor-agent='cd -- "${ git rev-parse --show-toplevel 2>/dev/null ||:; }" 2>/dev/null ||:; exec cursor-agent'
+    alias cursor-agent='git_root; exec cursor-agent'
     alias git-sh='source "$HOME/.git-sh"; unalias git-sh'
     alias grep='grep --color=auto'
     alias grepp='grep -P'
