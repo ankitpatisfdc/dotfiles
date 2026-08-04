@@ -839,6 +839,7 @@ function main {
     fi
 
     alias chomp='perl -pi -E "chomp if eof"'
+    alias claude='git_root; exec claude'
     alias codex='git_root; exec codex'
     alias cpan-outdated='cpan-outdated --mirror="$PERLBREW_CPAN_MIRROR"'
     alias cursor-agent='git_root; exec cursor-agent'
