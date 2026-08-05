@@ -508,7 +508,7 @@ function set_prompt {
     coloured_euid_indicator+=$euid_indicator
     readonly coloured_euid_indicator
 
-    local -ri max_prompt_length=10#$((COLUMNS - PROMPT_LEGROOM))
+    local -ri max_prompt_length=10#$((COLUMNS - (PROMPT_LEGROOM > COLUMNS ? COLUMNS : PROMPT_LEGROOM)))
     local long_prompt=$LONG_PROMPT
     local short_prompt=$SHORT_PROMPT
     local shortest_prompt=$SHORTEST_PROMPT
