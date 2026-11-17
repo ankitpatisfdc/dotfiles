@@ -1,0 +1,75 @@
+plugins:
+    sanitize-pods:
+        args:
+            - -c
+            - -o
+            - errexit
+            - -o
+            - nounset
+            - -o
+            - pipefail
+            - --
+            - |
+                declare -a kctl_args=(
+                    --context="$CONTEXT"
+                )
+
+                declare -a kctl_query=(
+                    get pods
+                        --field-selector='status.phase!=Pending,status.phase!=Running'
+                )
+
+                if [[ $NAMESPACE == 'all' || -z $NAMESPACE ]]
+                then
+                    kctl_args+=(
+                        --all-namespaces
+                    )
+                    kctl_query+=(
+                        --no-headers
+                        --output=custom-columns=:.metadata.name,:.metadata.namespace
+                    )
+
+                    readonly kctl_query
+
+                    kubectl "${kctl_args[@]}" "${kctl_query[@]}" \
+                    |
+                    while read -r pod_name pod_namespace
+                    do
+                        kctl_args[-1]="--namespace=$pod_namespace"
+
+                        kubectl \
+                            "${kctl_args[@]}" \
+                                delete pod \
+                                    -- \
+                                        "$pod_name"
+                    done
+                else
+                    kctl_args+=(
+                        --namespace="$NAMESPACE"
+                    )
+                    kctl_query+=(
+                        --output=NAME
+                    )
+
+                    readonly kctl_args
+                    readonly kctl_query
+
+                    kubectl "${kctl_args[@]}" "${kctl_query[@]}" \
+                    |
+                    xargs \
+                        --no-run-if-empty \
+                        -- \
+                            kubectl \
+                                "${kctl_args[@]}" \
+                                    delete \
+                                        --
+                fi
+        background: true
+        command: bash
+        confirm: false
+        dangerous: true
+        description: Sanitise Pods Without Prompt
+        override: true
+        scopes:
+            - pods
+        shortCut: z
